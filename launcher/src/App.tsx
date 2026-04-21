@@ -41,7 +41,7 @@ export function App() {
     : prototypes.filter((p) => p.product === selectedProduct)
 
   const masthead = (
-    <Masthead style={{ backgroundColor: 'var(--pf-t--global--background--color--primary--default)' }}>
+    <Masthead style={{ backgroundColor: 'var(--pf-t--global--background--color--primary--default)', borderBottom: '1px solid var(--pf-t--global--border--color--default)' }}>
       <MastheadMain>
         <MastheadBrand>
           <Title headingLevel="h4" style={{ color: 'var(--pf-t--global--text--color--regular)' }}>AppDev UX Prototypes</Title>
@@ -55,7 +55,7 @@ export function App() {
 
   return (
     <Page masthead={masthead}>
-      <PageSection>
+      <PageSection style={{ paddingBottom: 0 }}>
         <Title headingLevel="h1" style={{ color: 'var(--pf-t--global--text--color--regular)' }}>
           Prototypes
         </Title>
@@ -63,7 +63,7 @@ export function App() {
           Browse and launch UX prototypes built with PatternFly v6.
         </Content>
 
-        <Flex alignItems={{ default: 'alignItemsCenter' }} style={{ marginBottom: 24, gap: 12 }}>
+        <Flex alignItems={{ default: 'alignItemsCenter' }} style={{ gap: 12 }}>
           <FlexItem>
             <Content component="p" style={{ fontWeight: 600, margin: 0 }}>Filter by product:</Content>
           </FlexItem>
@@ -85,7 +85,8 @@ export function App() {
             </ToggleGroup>
           </FlexItem>
         </Flex>
-
+      </PageSection>
+      <PageSection>
         <Gallery hasGutter minWidths={{ default: '300px' }}>
           {filtered.map((proto) => (
             <Card key={proto.name} isFullHeight>
