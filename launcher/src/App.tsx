@@ -104,15 +104,20 @@ export function App() {
                 <Content component="p">{proto.description}</Content>
               </CardBody>
               <CardFooter>
-                <Button
-                  variant="primary"
-                  component="a"
-                  href={proto.path}
-                  icon={<ExternalLinkAltIcon />}
-                  iconPosition="end"
-                >
-                  Launch prototype
-                </Button>
+                <Flex justifyContent={{ default: 'justifyContentSpaceBetween' }} alignItems={{ default: 'alignItemsCenter' }}>
+                  <Button
+                    variant="primary"
+                    component="a"
+                    href={proto.path}
+                    icon={<ExternalLinkAltIcon />}
+                    iconPosition="end"
+                  >
+                    Launch prototype
+                  </Button>
+                  <Content component="small" style={{ color: 'var(--pf-t--global--text--color--subtle)' }}>
+                    Last updated: {proto.lastUpdated}
+                  </Content>
+                </Flex>
               </CardFooter>
             </Card>
           ))}
