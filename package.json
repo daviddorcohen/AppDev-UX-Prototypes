@@ -1,0 +1,12 @@
+{
+  "name": "appdev-ux-prototypes",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install:all": "cd launcher && npm install && cd ../prototypes/mta && npm install",
+    "build:launcher": "cd launcher && npm run build",
+    "build:mta": "cd prototypes/mta && npm run build",
+    "build": "npm run build:launcher && npm run build:mta && npm run assemble",
+    "assemble": "rm -rf dist && cp -R launcher/dist dist && mkdir -p dist/mta && cp -R prototypes/mta/dist/* dist/mta/"
+  }
+}

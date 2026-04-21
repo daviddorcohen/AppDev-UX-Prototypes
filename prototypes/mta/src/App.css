@@ -1,0 +1,62 @@
+/* Migrate wizard: full-width header without horizontal scroll */
+.migrate-wizard {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Table wrapper: horizontal scroll on small screens */
+.tackle-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tackle-table-wrapper table {
+  min-width: 600px;
+}
+
+.tackle-table-wrapper--applications {
+  min-height: 560px;
+}
+
+/* Application detail drawer */
+.tackle-application-drawer .pf-v6-c-drawer__content {
+  min-height: 0;
+}
+
+.tackle-application-drawer-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.tackle-application-drawer-panel .pf-v6-c-drawer__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--pf-t--global--spacer--md);
+}
+
+.tackle-application-drawer-panel .pf-v6-c-drawer__head {
+  padding: var(--pf-t--global--spacer--md);
+  border-bottom: 1px solid var(--pf-t--global--border--color--default);
+}
+
+.tackle-application-drawer-panel .pf-v6-c-tabs {
+  margin-bottom: 0;
+}
+
+.tackle-application-drawer-panel .pf-v6-c-description-list__group {
+  padding-block-end: var(--pf-t--global--spacer--sm);
+}
+
+.tackle-application-drawer-panel .pf-v6-c-description-list__term {
+  font-weight: var(--pf-t--global--font--weight--body--bold);
+}
+
+/* Drawer muted text */
+.tackle-drawer-muted {
+  color: var(--pf-t--global--text--color--subtle);
+}
+
+.tackle-drawer-details .pf-v6-c-description-list__group + .pf-v6-c-description-list__group {
+  margin-block-start: var(--pf-t--global--spacer--sm);
+}

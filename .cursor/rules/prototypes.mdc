@@ -1,0 +1,64 @@
+# Prototype Development Rules
+
+## Scope
+These rules apply to all prototypes in the `prototypes/` directory and the `launcher/` app.
+
+## Technology Stack
+- **React 18** with TypeScript
+- **PatternFly v6** (`@patternfly/react-core`, `@patternfly/react-icons`, `@patternfly/react-table`)
+- **Vite 6** for dev server and builds
+- **react-router-dom v7** for routing within prototypes
+
+## PatternFly v6 Rules
+- Always use `pf-v6-` prefixed utility classes. Never use `pf-v5-`, `pf-v4-`, or `pf-u-` prefixes.
+- Import components from `@patternfly/react-core`, icons from `@patternfly/react-icons/dist/esm/icons/`.
+- Use `Title` for headings, `Content` for body text. Never use raw `<h1>`-`<h6>` or `<p>` elements.
+- Use semantic design tokens (e.g. `--pf-t--global--text--color--regular`) for custom CSS. Never use hardcoded colors.
+- Use PF spacing tokens for margins/padding. Never use hardcoded pixel values in inline styles.
+- No Tailwind CSS. Use PatternFly utility classes and design tokens for all styling.
+
+## Prototype Structure
+Every prototype must follow this structure:
+```
+prototypes/{name}/
+├── package.json
+├── vite.config.ts      # base: '/AppDev-UX-Prototypes/{name}/'
+├── tsconfig.json
+├── index.html
+└── src/
+    ├── main.tsx
+    ├── App.tsx           # Root component with Page layout
+    └── pages/            # Page components
+```
+
+## Vite Base Path
+- Every prototype's `vite.config.ts` must set `base: '/AppDev-UX-Prototypes/{prototype-name}/'`
+- The launcher sets `base: '/AppDev-UX-Prototypes/'`
+
+## Wizard Pattern
+When building wizards:
+- Use `Modal` (variant `large`) + `Wizard` + `WizardStep` from PatternFly
+- Apply `overflow: hidden` on the Modal style to prevent horizontal scrollbar
+- Set `width="100%"` and `className="migrate-wizard"` on the Wizard for full-width header
+- Add this CSS class to prevent horizontal scroll:
+  ```css
+  .migrate-wizard { max-width: 100%; overflow-x: hidden; }
+  ```
+- Use `WizardHeader` with `title`, `description`, and `onClose` for the dark header
+- For sub-steps, pass `steps={[...]}` array to a parent `WizardStep`
+- Use bordered `<div>` containers for tables (not `<fieldset>/<legend>`)
+- Put `Radio` components inline in table Name cells (no separate select column)
+- Apply `tableLayout: 'fixed'` and `width: '100%'` on tables to prevent overflow
+
+## Adding a New Prototype
+1. Copy `prototypes/_template/` to `prototypes/{name}/`
+2. Update `vite.config.ts` base to `/AppDev-UX-Prototypes/{name}/`
+3. Add an entry to `launcher/src/prototypes.ts`
+4. Add install + build steps to root `package.json` scripts
+5. Add build + assemble steps to `.github/workflows/deploy.yml`
+
+## Accessibility
+- All interactive elements must have ARIA labels
+- Tables must have `aria-label`
+- Form inputs must have associated `FormGroup` labels
+- Use `screenReaderText` on table header cells where visual label is hidden
