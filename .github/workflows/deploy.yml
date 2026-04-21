@@ -29,11 +29,11 @@ jobs:
 
       - name: Install and build launcher
         working-directory: launcher
-        run: npm ci && npm run build
+        run: npm install && npm run build
 
       - name: Install and build MTA prototype
         working-directory: prototypes/mta
-        run: npm ci && npm run build
+        run: npm install && npm run build
 
       - name: Assemble dist
         run: |
