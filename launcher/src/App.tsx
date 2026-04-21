@@ -60,10 +60,15 @@ export function App() {
                   <Badge style={statusColor(proto.status)}>{proto.status}</Badge>
                 </Flex>
               </CardHeader>
-              <CardBody>{proto.description}</CardBody>
+              <CardBody>
+                <Content component="p" style={{ fontWeight: 600, marginBottom: 8 }}>
+                  {proto.project}
+                </Content>
+                <Content component="p">{proto.description}</Content>
+              </CardBody>
               <CardFooter>
                 <Button
-                  variant="link"
+                  variant="primary"
                   component="a"
                   href={proto.path}
                   icon={<ExternalLinkAltIcon />}
