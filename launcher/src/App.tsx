@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Page,
   Masthead,
@@ -18,9 +18,12 @@ import {
   Button,
   Flex,
   FlexItem,
+  Label,
+  ToggleGroup,
+  ToggleGroupItem,
 } from '@patternfly/react-core'
 import ExternalLinkAltIcon from '@patternfly/react-icons/dist/esm/icons/external-link-alt-icon'
-import { prototypes, Prototype } from './prototypes'
+import { prototypes, allProducts, Prototype, Product } from './prototypes'
 
 function statusColor(status: Prototype['status']) {
   switch (status) {
@@ -31,6 +34,12 @@ function statusColor(status: Prototype['status']) {
 }
 
 export function App() {
+  const [selectedProduct, setSelectedProduct] = useState<Product | 'All'>('All')
+
+  const filtered = selectedProduct === 'All'
+    ? prototypes
+    : prototypes.filter((p) => p.product === selectedProduct)
+
   const masthead = (
     <Masthead>
       <MastheadMain>
@@ -47,12 +56,38 @@ export function App() {
   return (
     <Page masthead={masthead}>
       <PageSection>
-        <Title headingLevel="h1">Prototypes</Title>
-        <Content component="p" style={{ marginTop: 8, marginBottom: 24 }}>
+        <Title headingLevel="h1" style={{ color: 'var(--pf-t--global--text--color--regular)' }}>
+          Prototypes
+        </Title>
+        <Content component="p" style={{ marginTop: 8, marginBottom: 16 }}>
           Browse and launch UX prototypes built with PatternFly v6.
         </Content>
+
+        <Flex alignItems={{ default: 'alignItemsCenter' }} style={{ marginBottom: 24, gap: 12 }}>
+          <FlexItem>
+            <Content component="p" style={{ fontWeight: 600, margin: 0 }}>Filter by product:</Content>
+          </FlexItem>
+          <FlexItem>
+            <ToggleGroup aria-label="Filter by product">
+              <ToggleGroupItem
+                text="All"
+                isSelected={selectedProduct === 'All'}
+                onChange={() => setSelectedProduct('All')}
+              />
+              {allProducts.map((product) => (
+                <ToggleGroupItem
+                  key={product}
+                  text={product}
+                  isSelected={selectedProduct === product}
+                  onChange={() => setSelectedProduct(product)}
+                />
+              ))}
+            </ToggleGroup>
+          </FlexItem>
+        </Flex>
+
         <Gallery hasGutter minWidths={{ default: '300px' }}>
-          {prototypes.map((proto) => (
+          {filtered.map((proto) => (
             <Card key={proto.name} isFullHeight>
               <CardHeader>
                 <Flex justifyContent={{ default: 'justifyContentSpaceBetween' }} alignItems={{ default: 'alignItemsCenter' }}>
@@ -61,6 +96,9 @@ export function App() {
                 </Flex>
               </CardHeader>
               <CardBody>
+                <Flex style={{ marginBottom: 12 }}>
+                  <Label color="blue" isCompact>{proto.product}</Label>
+                </Flex>
                 <Content component="p" style={{ fontWeight: 600, marginBottom: 8 }}>
                   {proto.project}
                 </Content>
@@ -80,6 +118,12 @@ export function App() {
             </Card>
           ))}
         </Gallery>
+
+        {filtered.length === 0 && (
+          <Content component="p" style={{ marginTop: 24, fontStyle: 'italic' }}>
+            No prototypes found for {selectedProduct}.
+          </Content>
+        )}
       </PageSection>
     </Page>
   )
