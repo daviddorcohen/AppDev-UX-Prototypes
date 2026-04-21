@@ -55,7 +55,7 @@ export function App() {
 
   return (
     <Page masthead={masthead}>
-      <PageSection>
+      <PageSection style={{ paddingTop: 20 }}>
         <Title headingLevel="h1" style={{ color: 'var(--pf-t--global--text--color--regular)' }}>
           Prototypes
         </Title>
