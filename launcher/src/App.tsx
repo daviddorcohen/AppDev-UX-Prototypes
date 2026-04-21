@@ -41,7 +41,7 @@ export function App() {
     : prototypes.filter((p) => p.product === selectedProduct)
 
   const masthead = (
-    <Masthead style={{ backgroundColor: 'var(--pf-t--global--background--color--primary--default)' }}>
+    <Masthead style={{ backgroundColor: 'var(--pf-t--global--background--color--primary--default)', marginBottom: 20 }}>
       <MastheadMain>
         <MastheadBrand>
           <Title headingLevel="h4" style={{ color: 'var(--pf-t--global--text--color--regular)' }}>AppDev UX Prototypes</Title>
@@ -55,7 +55,7 @@ export function App() {
 
   return (
     <Page masthead={masthead}>
-      <PageSection style={{ paddingTop: 20 }}>
+      <PageSection>
         <Title headingLevel="h1" style={{ color: 'var(--pf-t--global--text--color--regular)' }}>
           Prototypes
         </Title>
