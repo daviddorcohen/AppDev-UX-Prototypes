@@ -4,4 +4,9 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   base: '/AppDev-UX-Prototypes/mta/',
+  build: {
+    commonjsOptions: {
+      transformMixedEsModules: true,
+    },
+  },
 })
