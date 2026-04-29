@@ -31,6 +31,7 @@ import ExclamationTriangleIcon from '@patternfly/react-icons/dist/esm/icons/excl
 import SyncAltIcon from '@patternfly/react-icons/dist/esm/icons/sync-alt-icon'
 import { MigrateWizard } from './MigrateWizard'
 import { AnalysisWizard } from './AnalysisWizard'
+import { BatchMigrationWizard } from './BatchMigrationWizard'
 
 const summaryStats = [
   {
@@ -87,10 +88,10 @@ const quickActions: QuickAction[] = [
     actionId: 'analysis',
   },
   {
-    title: 'IDE AI Analysis',
-    description: 'Use AI-powered analysis directly in your IDE',
+    title: 'Batch Migration',
+    description: 'Run AI-powered migration agents across multiple applications at once',
     icon: CodeIcon,
-    to: '/analysis',
+    actionId: 'batch-migrate',
   },
 ]
 
@@ -119,12 +120,15 @@ export function Dashboard() {
   const navigate = useNavigate()
   const [isMigrateWizardOpen, setIsMigrateWizardOpen] = useState(false)
   const [isAnalysisWizardOpen, setIsAnalysisWizardOpen] = useState(false)
+  const [isBatchMigrationOpen, setIsBatchMigrationOpen] = useState(false)
 
   const handleQuickAction = (action: QuickAction) => {
     if (action.actionId === 'migrate') {
       setIsMigrateWizardOpen(true)
     } else if (action.actionId === 'analysis') {
       setIsAnalysisWizardOpen(true)
+    } else if (action.actionId === 'batch-migrate') {
+      setIsBatchMigrationOpen(true)
     } else if (action.to) {
       navigate(action.to)
     }
@@ -139,6 +143,10 @@ export function Dashboard() {
       <AnalysisWizard
         isOpen={isAnalysisWizardOpen}
         onClose={() => setIsAnalysisWizardOpen(false)}
+      />
+      <BatchMigrationWizard
+        isOpen={isBatchMigrationOpen}
+        onClose={() => setIsBatchMigrationOpen(false)}
       />
       <div>
         <Title headingLevel="h1">Welcome to Konveyor</Title>
