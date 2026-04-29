@@ -192,10 +192,11 @@ export function BatchMigrationWizard({ isOpen, onClose }: BatchMigrationWizardPr
           Application inventory
           <Badge isRead style={{ marginLeft: 8 }}>{selectedApps.length} selected</Badge>
         </div>
-        <Table aria-label="Select applications" variant="compact" borders={false} style={{ tableLayout: 'fixed', width: '100%' }}>
+        <Table aria-label="Select applications" variant="compact" borders={false} style={{ width: '100%' }}>
           <Thead>
             <Tr>
               <Th
+                style={{ width: 40 }}
                 select={{
                   onSelect: toggleAll,
                   isSelected: selectedApps.length === inventoryApps.length,
