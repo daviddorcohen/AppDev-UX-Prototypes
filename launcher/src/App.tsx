@@ -25,6 +25,34 @@ import {
 import ExternalLinkAltIcon from '@patternfly/react-icons/dist/esm/icons/external-link-alt-icon'
 import { prototypes, allProducts, Prototype, Product } from './prototypes'
 
+type LabelColor = 'blue' | 'green' | 'orange' | 'red' | 'purple' | 'teal' | 'yellow' | 'grey'
+
+const productColorMap: Record<Product, LabelColor> = {
+  'RHDH': 'purple',
+  'MTA': 'teal',
+  'Konflux': 'orange',
+  'TPA': 'blue',
+  'TAS': 'green',
+  'Podman Desktop': 'red',
+  'RHCL': 'yellow',
+  'DevSpaces': 'grey',
+}
+
+const colorCssMap: Record<LabelColor, string> = {
+  blue: 'var(--pf-t--global--color--nonstatus--blue--default)',
+  green: 'var(--pf-t--global--color--nonstatus--green--default)',
+  orange: 'var(--pf-t--global--color--nonstatus--orange--default)',
+  red: 'var(--pf-t--global--color--nonstatus--red--default)',
+  purple: 'var(--pf-t--global--color--nonstatus--purple--default)',
+  teal: 'var(--pf-t--global--color--nonstatus--teal--default)',
+  yellow: 'var(--pf-t--global--color--nonstatus--yellow--default)',
+  grey: 'var(--pf-t--global--text--color--subtle)',
+}
+
+function productColor(product: Product): LabelColor {
+  return productColorMap[product]
+}
+
 function statusColor(status: Prototype['status']) {
   switch (status) {
     case 'Active': return { backgroundColor: 'var(--pf-t--global--color--nonstatus--green--default)', color: 'white' }
@@ -33,17 +61,26 @@ function statusColor(status: Prototype['status']) {
   }
 }
 
+function toSlug(product: Product | 'All'): string {
+  return product.replace(/\s+/g, '-')
+}
+
+function fromSlug(slug: string): Product | 'All' {
+  if (!slug || slug.toLowerCase() === 'all') return 'All'
+  const match = allProducts.find((p) => toSlug(p).toLowerCase() === slug.toLowerCase())
+  return match ?? 'All'
+}
+
 function getProductFromPath(): Product | 'All' {
   const basePath = '/AppDev-UX-Prototypes/'
 
-  // Check for SPA redirect query param from 404.html
   const params = new URLSearchParams(window.location.search)
   const redirectPath = params.get('p')
   if (redirectPath) {
     const cleaned = redirectPath.replace(/\/$/, '')
-    const match = allProducts.find((p) => p.toLowerCase() === cleaned.toLowerCase())
-    if (match) {
-      window.history.replaceState(null, '', `${basePath}${match}`)
+    const match = fromSlug(cleaned)
+    if (match !== 'All') {
+      window.history.replaceState(null, '', `${basePath}${toSlug(match)}`)
       return match
     }
     window.history.replaceState(null, '', basePath)
@@ -52,8 +89,7 @@ function getProductFromPath(): Product | 'All' {
 
   const path = window.location.pathname.replace(basePath, '').replace(/\/$/, '')
   if (!path) return 'All'
-  const match = allProducts.find((p) => p.toLowerCase() === path.toLowerCase())
-  return match ?? 'All'
+  return fromSlug(path)
 }
 
 export function App() {
@@ -61,7 +97,7 @@ export function App() {
 
   useEffect(() => {
     const basePath = '/AppDev-UX-Prototypes/'
-    const newPath = selectedProduct === 'All' ? basePath : `${basePath}${selectedProduct}`
+    const newPath = selectedProduct === 'All' ? basePath : `${basePath}${toSlug(selectedProduct)}`
     if (window.location.pathname !== newPath) {
       window.history.pushState(null, '', newPath)
     }
@@ -114,7 +150,18 @@ export function App() {
               {allProducts.map((product) => (
                 <ToggleGroupItem
                   key={product}
-                  text={product}
+                  text={
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: '50%',
+                        backgroundColor: colorCssMap[productColorMap[product]],
+                        flexShrink: 0,
+                      }} />
+                      {product}
+                    </span>
+                  }
                   isSelected={selectedProduct === product}
                   onChange={() => setSelectedProduct(product)}
                 />
@@ -126,14 +173,11 @@ export function App() {
           {filtered.map((proto) => (
             <Card key={proto.name} isFullHeight>
               <CardHeader>
-                <Flex justifyContent={{ default: 'justifyContentSpaceBetween' }} alignItems={{ default: 'alignItemsCenter' }}>
-                  <CardTitle>{proto.name}</CardTitle>
-                  <Badge style={statusColor(proto.status)}>{proto.status}</Badge>
-                </Flex>
+                <CardTitle>{proto.name}</CardTitle>
               </CardHeader>
               <CardBody>
                 <Flex style={{ marginBottom: 12 }}>
-                  <Label color="blue" isCompact>{proto.product}</Label>
+                  <Label color={productColor(proto.product)} isCompact>{proto.product}</Label>
                 </Flex>
                 <Content component="p" style={{ fontWeight: 600, marginBottom: 8 }}>
                   {proto.project}
@@ -143,7 +187,7 @@ export function App() {
               <CardFooter>
                 <Flex justifyContent={{ default: 'justifyContentSpaceBetween' }} alignItems={{ default: 'alignItemsCenter' }}>
                   <Button
-                    variant="primary"
+                    variant="secondary"
                     component="a"
                     href={proto.externalUrl || proto.path}
                     target={proto.externalUrl ? '_blank' : undefined}
