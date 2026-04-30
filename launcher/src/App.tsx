@@ -74,7 +74,7 @@ export function App() {
   }, [])
 
   const filtered = selectedProduct === 'All'
-    ? prototypes
+    ? [...prototypes].sort((a, b) => a.name.localeCompare(b.name))
     : prototypes.filter((p) => p.product === selectedProduct)
 
   const masthead = (
@@ -151,7 +151,7 @@ export function App() {
                     icon={<ExternalLinkAltIcon />}
                     iconPosition="end"
                   >
-                    Launch prototype
+                    {proto.externalUrl ? 'Launch prototype (VPN required)' : 'Launch prototype'}
                   </Button>
                   <Content component="small" style={{ color: 'var(--pf-t--global--text--color--subtle)' }}>
                     Last updated: {proto.lastUpdated}
