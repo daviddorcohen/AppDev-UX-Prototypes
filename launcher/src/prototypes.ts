@@ -103,4 +103,14 @@ export const prototypes: Prototype[] = [
     status: 'Active',
     lastUpdated: 'Apr 30, 2026',
   },
+  {
+    name: 'Data Center',
+    project: 'Red Hat Developer Hub',
+    product: 'RHDH',
+    description: 'A data center management prototype for Red Hat Developer Hub, providing visibility into infrastructure resources, capacity planning, and operational status across distributed environments.',
+    externalUrl: 'https://dcm-4dc8dc.pages.redhat.com',
+    path: '',
+    status: 'Active',
+    lastUpdated: 'Apr 30, 2026',
+  },
 ]
