@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Page,
   Masthead,
@@ -33,11 +33,48 @@ function statusColor(status: Prototype['status']) {
   }
 }
 
+function getProductFromPath(): Product | 'All' {
+  const basePath = '/AppDev-UX-Prototypes/'
+
+  // Check for SPA redirect query param from 404.html
+  const params = new URLSearchParams(window.location.search)
+  const redirectPath = params.get('p')
+  if (redirectPath) {
+    const cleaned = redirectPath.replace(/\/$/, '')
+    const match = allProducts.find((p) => p.toLowerCase() === cleaned.toLowerCase())
+    if (match) {
+      window.history.replaceState(null, '', `${basePath}${match}`)
+      return match
+    }
+    window.history.replaceState(null, '', basePath)
+    return 'All'
+  }
+
+  const path = window.location.pathname.replace(basePath, '').replace(/\/$/, '')
+  if (!path) return 'All'
+  const match = allProducts.find((p) => p.toLowerCase() === path.toLowerCase())
+  return match ?? 'All'
+}
+
 export function App() {
-  const [selectedProduct, setSelectedProduct] = useState<Product | 'All'>('All')
+  const [selectedProduct, setSelectedProduct] = useState<Product | 'All'>(getProductFromPath)
+
+  useEffect(() => {
+    const basePath = '/AppDev-UX-Prototypes/'
+    const newPath = selectedProduct === 'All' ? basePath : `${basePath}${selectedProduct}`
+    if (window.location.pathname !== newPath) {
+      window.history.pushState(null, '', newPath)
+    }
+  }, [selectedProduct])
+
+  useEffect(() => {
+    const handlePopState = () => setSelectedProduct(getProductFromPath())
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
 
   const filtered = selectedProduct === 'All'
-    ? prototypes
+    ? [...prototypes].sort((a, b) => a.name.localeCompare(b.name))
     : prototypes.filter((p) => p.product === selectedProduct)
 
   const masthead = (
@@ -108,11 +145,13 @@ export function App() {
                   <Button
                     variant="primary"
                     component="a"
-                    href={proto.path}
+                    href={proto.externalUrl || proto.path}
+                    target={proto.externalUrl ? '_blank' : undefined}
+                    rel={proto.externalUrl ? 'noopener noreferrer' : undefined}
                     icon={<ExternalLinkAltIcon />}
                     iconPosition="end"
                   >
-                    Launch prototype
+                    {proto.externalUrl ? 'Launch prototype (VPN required)' : 'Launch prototype'}
                   </Button>
                   <Content component="small" style={{ color: 'var(--pf-t--global--text--color--subtle)' }}>
                     Last updated: {proto.lastUpdated}
