@@ -118,7 +118,7 @@ export const prototypes: Prototype[] = [
     project: 'PatternFly Component Alignment',
     product: 'Podman Desktop',
     description: 'A prototype exploring the alignment of Podman Desktop UI components with PatternFly design patterns, ensuring visual and behavioral consistency with the Red Hat design system.',
-    externalUrl: 'https://gitlab.cee.redhat.com/uxd/prototypes/podman-desktop',
+    externalUrl: 'https://podman-desktop-aaa7fd.pages.redhat.com/',
     path: '',
     status: 'Active',
     lastUpdated: 'Apr 30, 2026',
