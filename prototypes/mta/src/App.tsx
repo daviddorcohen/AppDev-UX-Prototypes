@@ -19,7 +19,7 @@ import React, { useState } from 'react'
 import { QuickStartContainer, QuickStartCatalogPage } from '@patternfly/quickstarts'
 import '@patternfly/quickstarts/dist/quickstarts.min.css'
 import { konveyorQuickStart } from './quickstarts/konveyor-quickstart'
-import { Dashboard } from './pages/Dashboard'
+import { DashboardProvider, DashboardPage, mockDashboardData } from './dashboard'
 import { Applications } from './pages/Applications'
 import { PlaceholderPage } from './pages/PlaceholderPage'
 import './App.css'
@@ -180,7 +180,11 @@ export default function App() {
         <PageSection isFilled>
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={
+              <DashboardProvider data={mockDashboardData} navigateTo={navigate}>
+                <DashboardPage />
+              </DashboardProvider>
+            } />
             <Route path="/applications" element={<Applications />} />
             <Route path="/quickstarts" element={<QuickStartCatalogPage title="Quickstarts" hint="Step-by-step guides to get the most out of Konveyor Tackle." showFilter />} />
             <Route path="/archetypes" element={<PlaceholderPage title="Archetypes" description="Manage application archetypes for assessment and review." />} />
