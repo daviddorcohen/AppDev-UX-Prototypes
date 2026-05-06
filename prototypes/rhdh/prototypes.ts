@@ -91,4 +91,14 @@ export const rhdhPrototypes: Prototype[] = [
     status: 'Active',
     lastUpdated: 'Apr 30, 2026',
   },
+  {
+    name: 'Skill Marketplace',
+    project: 'Agentic Skill Discovery & Sharing',
+    product: 'RHDH',
+    description: 'A marketplace for discovering, sharing, and managing reusable skills and agents within Red Hat Developer Hub, enabling teams to leverage AI-powered automation across their development workflows.',
+    externalUrl: 'https://agentic-524bde.pages.redhat.com/',
+    path: '',
+    status: 'Active',
+    lastUpdated: 'May 6, 2026',
+  },
 ]
