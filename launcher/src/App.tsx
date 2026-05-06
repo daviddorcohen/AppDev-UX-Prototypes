@@ -132,9 +132,6 @@ export function App() {
         <Title headingLevel="h1" style={{ color: 'var(--pf-t--global--text--color--regular)' }}>
           Prototypes
         </Title>
-        <Content component="p" style={{ marginTop: 8, marginBottom: 16 }}>
-          Browse and launch UX prototypes built with PatternFly v6.
-        </Content>
 
         <Flex alignItems={{ default: 'alignItemsCenter' }} style={{ marginBottom: 24, gap: 12 }}>
           <FlexItem>
