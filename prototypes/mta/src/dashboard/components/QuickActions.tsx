@@ -40,26 +40,24 @@ export function QuickActions() {
             const { title, description, icon: Icon } = action
             return (
               <GridItem key={title} span={12} sm={6} lg={3}>
-                <div
-                  role="button"
-                  tabIndex={0}
+                <Card
+                  isFullHeight
+                  isClickable
+                  aria-label={title}
+                  className="dashboard-quick-action-card"
                   onClick={() => handleAction(action)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleAction(action)}
-                  style={{ cursor: 'pointer', height: '100%' }}
                 >
-                  <Card isFullHeight variant="default" className="dashboard-quick-action-card">
-                    <CardHeader>
-                      <CardTitle>
-                        <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <Icon size="lg" /> {title}
-                        </span>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardBody>
-                      <Content><p>{description}</p></Content>
-                    </CardBody>
-                  </Card>
-                </div>
+                  <CardHeader>
+                    <CardTitle>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <Icon size="lg" /> {title}
+                      </span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardBody>
+                    <Content><p>{description}</p></Content>
+                  </CardBody>
+                </Card>
               </GridItem>
             )
           })}

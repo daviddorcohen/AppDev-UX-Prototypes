@@ -10,6 +10,7 @@ import {
   ListItem,
   Divider,
   Content,
+  Button,
 } from '@patternfly/react-core'
 import FolderIcon from '@patternfly/react-icons/dist/esm/icons/folder-icon'
 import { useDashboard } from '../DashboardProvider'
@@ -26,7 +27,7 @@ export function ApplicationsOverview() {
               <FolderIcon /> Applications
             </span>
           </CardTitle>
-          <a href="#" onClick={(e) => { e.preventDefault(); navigateTo('/applications') }} style={{ cursor: 'pointer' }}>View all</a>
+          <Button variant="link" onClick={() => navigateTo('/applications')}>View all</Button>
         </Flex>
       </CardHeader>
       <CardBody>

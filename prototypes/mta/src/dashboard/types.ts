@@ -5,6 +5,7 @@ export interface SummaryStat {
   value: string
   label: string
   detail: string
+  to?: string
 }
 
 export interface ApplicationSummary {

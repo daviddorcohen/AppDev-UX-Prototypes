@@ -177,7 +177,7 @@ export function Applications() {
         {selectedApp && (
           <Tabs activeKey={activeDrawerTab} onSelect={(_e, key) => setActiveDrawerTab(key)} isBox className="pf-v6-u-pt-sm">
             <Tab eventKey={0} title={<TabTitleText>Details</TabTitleText>}>
-              <TabContent className="pf-v6-u-pt-md">
+              <TabContent id="tab-details" className="pf-v6-u-pt-md">
                 <Content className="tackle-drawer-details">
                   <p className="pf-v6-u-mb-md tackle-drawer-muted">{selectedApp.description}</p>
                   <div className="pf-v6-u-mb-lg">
@@ -232,7 +232,7 @@ export function Applications() {
               </TabContent>
             </Tab>
             <Tab eventKey={1} title={<TabTitleText>Tags</TabTitleText>}>
-              <TabContent className="pf-v6-u-pt-md">
+              <TabContent id="tab-tags" className="pf-v6-u-pt-md">
                 <Content>
                   <Flex gap={{ default: 'gapSm' }} wrap="wrap">
                     {selectedApp.tags.length ? selectedApp.tags.map((t) => <Badge key={t} isRead>{t}</Badge>) : <span className="tackle-drawer-muted">No tags</span>}
@@ -241,10 +241,10 @@ export function Applications() {
               </TabContent>
             </Tab>
             <Tab eventKey={2} title={<TabTitleText>Reports</TabTitleText>}>
-              <TabContent className="pf-v6-u-pt-md"><Content><p className="tackle-drawer-muted">Reports for this application will appear here.</p></Content></TabContent>
+              <TabContent id="tab-reports" className="pf-v6-u-pt-md"><Content><p className="tackle-drawer-muted">Reports for this application will appear here.</p></Content></TabContent>
             </Tab>
             <Tab eventKey={3} title={<TabTitleText>Review</TabTitleText>}>
-              <TabContent className="pf-v6-u-pt-md"><Content><p className="tackle-drawer-muted">Review status: <strong>{selectedApp.assessment}</strong></p></Content></TabContent>
+              <TabContent id="tab-review" className="pf-v6-u-pt-md"><Content><p className="tackle-drawer-muted">Review status: <strong>{selectedApp.assessment}</strong></p></Content></TabContent>
             </Tab>
           </Tabs>
         )}

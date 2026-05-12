@@ -26,15 +26,7 @@ export function DashboardPage() {
 
   return (
     <Stack hasGutter style={{ minWidth: 0 }}>
-      <div>
-        <Title headingLevel="h1">Welcome to Konveyor</Title>
-        <Content>
-          <p style={{ marginTop: 8, color: 'var(--pf-v6-global--Color--200)' }}>
-            Accelerate your application modernization and migration journey
-          </p>
-        </Content>
-      </div>
-
+      <Title headingLevel="h1" size="xl">Dashboard</Title>
       <SummaryStats />
       <QuickActions />
 

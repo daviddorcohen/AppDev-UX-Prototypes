@@ -53,6 +53,7 @@ import ShareAltIcon from '@patternfly/react-icons/dist/esm/icons/share-alt-icon'
 import RouteIcon from '@patternfly/react-icons/dist/esm/icons/route-icon'
 import CloudUploadAltIcon from '@patternfly/react-icons/dist/esm/icons/cloud-upload-alt-icon'
 import InfoCircleIcon from '@patternfly/react-icons/dist/esm/icons/info-circle-icon'
+import ExclamationTriangleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-triangle-icon'
 import {
   Table,
   Thead,
@@ -131,11 +132,58 @@ export function AnalysisWizard({ isOpen, onClose }: AnalysisWizardProps) {
     )
   }
 
+  const hasCredentialIssue = true
+  const hasRepoIssue = false
+
+  const showPrereqAlert = hasCredentialIssue || hasRepoIssue
+
   const stepSelectApp = (
     <Stack hasGutter>
+      {showPrereqAlert && (
+        <Alert
+          variant="warning"
+          isInline
+          title="Some prerequisites are incomplete"
+          actionLinks={
+            <Button variant="link" isInline onClick={() => onClose()}>
+              Resolve on Migration Home
+            </Button>
+          }
+        >
+          <Flex direction={{ default: 'column' }} spaceItems={{ default: 'spaceItemsXs' }}>
+            {!hasRepoIssue && (
+              <Flex spaceItems={{ default: 'spaceItemsSm' }} alignItems={{ default: 'alignItemsCenter' }}>
+                <Icon status="success"><CheckCircleIcon /></Icon>
+                <FlexItem>Source repositories — configured</FlexItem>
+              </Flex>
+            )}
+            {hasRepoIssue && (
+              <Flex spaceItems={{ default: 'spaceItemsSm' }} alignItems={{ default: 'alignItemsCenter' }}>
+                <Icon status="warning"><ExclamationTriangleIcon /></Icon>
+                <FlexItem>Source repositories — 5 apps missing</FlexItem>
+              </Flex>
+            )}
+            {hasCredentialIssue && (
+              <Flex spaceItems={{ default: 'spaceItemsSm' }} alignItems={{ default: 'alignItemsCenter' }}>
+                <Icon status="warning"><ExclamationTriangleIcon /></Icon>
+                <FlexItem>Credentials — 5 apps need credentials for private repos</FlexItem>
+              </Flex>
+            )}
+            {!hasCredentialIssue && (
+              <Flex spaceItems={{ default: 'spaceItemsSm' }} alignItems={{ default: 'alignItemsCenter' }}>
+                <Icon status="success"><CheckCircleIcon /></Icon>
+                <FlexItem>Credentials — configured</FlexItem>
+              </Flex>
+            )}
+          </Flex>
+          <Content component="small" style={{ marginTop: 'var(--pf-t--global--spacer--sm)' }}>
+            You can continue, but analysis may fail for apps without credentials.
+          </Content>
+        </Alert>
+      )}
       <div>
         <Title headingLevel="h2">Select application</Title>
-        <Content component="p">please select the application you want to analyze</Content>
+        <Content component="p">Select the application you want to analyze</Content>
       </div>
       <Flex spaceItems={{ default: 'spaceItemsXl' }}>
         <FlexItem>
@@ -260,7 +308,7 @@ export function AnalysisWizard({ isOpen, onClose }: AnalysisWizardProps) {
 
   const stepSetTargets = (
     <Stack hasGutter>
-      <Title headingLevel="h2">Analysis mode</Title>
+      <Title headingLevel="h2">Set targets</Title>
       <Content component="p">
         Select one or more target options in focus for the analysis report
       </Content>
@@ -277,13 +325,12 @@ export function AnalysisWizard({ isOpen, onClose }: AnalysisWizardProps) {
           return (
             <GridItem key={target.name} span={12} md={4}>
               <Card
-                isFlat
                 isFullHeight
+                isClickable
+                isSelectable
+                isSelected={isSelected}
                 style={{
                   cursor: 'pointer',
-                  outline: isSelected
-                    ? '2px solid var(--pf-t--global--border--color--clicked)'
-                    : undefined,
                 }}
                 onClick={() => toggleTarget(idx)}
               >
@@ -489,11 +536,11 @@ export function AnalysisWizard({ isOpen, onClose }: AnalysisWizardProps) {
         </DescriptionListGroup>
         <DescriptionListGroup>
           <DescriptionListTerm>Target rule labels</DescriptionListTerm>
-          <DescriptionListDescription />
+          <DescriptionListDescription>None</DescriptionListDescription>
         </DescriptionListGroup>
         <DescriptionListGroup>
           <DescriptionListTerm>Source rule labels</DescriptionListTerm>
-          <DescriptionListDescription />
+          <DescriptionListDescription>None</DescriptionListDescription>
         </DescriptionListGroup>
         <DescriptionListGroup>
           <DescriptionListTerm>Scope</DescriptionListTerm>
@@ -501,27 +548,27 @@ export function AnalysisWizard({ isOpen, onClose }: AnalysisWizardProps) {
         </DescriptionListGroup>
         <DescriptionListGroup>
           <DescriptionListTerm>Included packages</DescriptionListTerm>
-          <DescriptionListDescription />
+          <DescriptionListDescription>None</DescriptionListDescription>
         </DescriptionListGroup>
         <DescriptionListGroup>
           <DescriptionListTerm>Excluded packages</DescriptionListTerm>
-          <DescriptionListDescription />
+          <DescriptionListDescription>None</DescriptionListDescription>
         </DescriptionListGroup>
         <DescriptionListGroup>
           <DescriptionListTerm>Custom rules</DescriptionListTerm>
-          <DescriptionListDescription />
+          <DescriptionListDescription>None</DescriptionListDescription>
         </DescriptionListGroup>
         <DescriptionListGroup>
           <DescriptionListTerm>Additional target labels</DescriptionListTerm>
-          <DescriptionListDescription />
+          <DescriptionListDescription>None</DescriptionListDescription>
         </DescriptionListGroup>
         <DescriptionListGroup>
           <DescriptionListTerm>Additional source labels</DescriptionListTerm>
-          <DescriptionListDescription />
+          <DescriptionListDescription>None</DescriptionListDescription>
         </DescriptionListGroup>
         <DescriptionListGroup>
           <DescriptionListTerm>Excluded rules</DescriptionListTerm>
-          <DescriptionListDescription />
+          <DescriptionListDescription>None</DescriptionListDescription>
         </DescriptionListGroup>
       </DescriptionList>
     </Stack>
@@ -533,8 +580,6 @@ export function AnalysisWizard({ isOpen, onClose }: AnalysisWizardProps) {
       onClose={handleClose}
       aria-label="Analysis report wizard"
       variant={ModalVariant.large}
-      hasNoBodyWrapper
-      showClose={false}
       style={{ overflow: 'hidden' }}
     >
       <Wizard
@@ -546,7 +591,7 @@ export function AnalysisWizard({ isOpen, onClose }: AnalysisWizardProps) {
         header={
           <WizardHeader
             title="Analysis report"
-            description="Description"
+            description="Configure and run a static code analysis on your applications"
             onClose={handleClose}
           />
         }

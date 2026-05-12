@@ -326,8 +326,6 @@ export function MigrateWizard({ isOpen, onClose }: MigrateWizardProps) {
       onClose={handleClose}
       aria-label="Migrate application wizard"
       variant={ModalVariant.large}
-      hasNoBodyWrapper
-      showClose={false}
       style={{ overflow: 'hidden' }}
     >
       <Wizard
@@ -338,8 +336,8 @@ export function MigrateWizard({ isOpen, onClose }: MigrateWizardProps) {
         onSave={handleSave}
         header={
           <WizardHeader
-            title="Migrate application"
-            description="Description"
+            title="Generate migration assets"
+            description="Generate deployment assets to migrate your application to a target platform"
             onClose={handleClose}
           />
         }

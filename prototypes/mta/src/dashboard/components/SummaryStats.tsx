@@ -12,13 +12,17 @@ import {
 import { useDashboard } from '../DashboardProvider'
 
 export function SummaryStats() {
-  const { data } = useDashboard()
+  const { data, navigateTo } = useDashboard()
 
   return (
     <Grid hasGutter>
-      {data.summaryStats.map(({ icon: Icon, value, label, detail }) => (
+      {data.summaryStats.map(({ icon: Icon, value, label, detail, to }) => (
         <GridItem key={label} span={12} sm={6} lg={3}>
-          <Card isFlat isCompact>
+          <Card
+            isClickable={!!to}
+            aria-label={label}
+            onClick={() => to && navigateTo(to)}
+          >
             <CardBody>
               <Flex alignItems={{ default: 'alignItemsFlexStart' }} spaceItems={{ default: 'spaceItemsSm' }}>
                 <Icon />

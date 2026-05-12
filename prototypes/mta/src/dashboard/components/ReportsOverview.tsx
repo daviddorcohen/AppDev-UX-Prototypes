@@ -8,6 +8,7 @@ import {
   Badge,
   List,
   ListItem,
+  Button,
 } from '@patternfly/react-core'
 import FileAltIcon from '@patternfly/react-icons/dist/esm/icons/file-alt-icon'
 import { useDashboard } from '../DashboardProvider'
@@ -24,7 +25,7 @@ export function ReportsOverview() {
               <FileAltIcon /> Latest Analysis Reports
             </span>
           </CardTitle>
-          <a href="#" onClick={(e) => { e.preventDefault(); navigateTo('/reports') }} style={{ cursor: 'pointer' }}>View all</a>
+          <Button variant="link" onClick={() => navigateTo('/reports')}>View all</Button>
         </Flex>
       </CardHeader>
       <CardBody>

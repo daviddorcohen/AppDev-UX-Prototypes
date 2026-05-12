@@ -1,4 +1,4 @@
-import UsersIcon from '@patternfly/react-icons/dist/esm/icons/users-icon'
+import CubesIcon from '@patternfly/react-icons/dist/esm/icons/cubes-icon'
 import CheckCircleIcon from '@patternfly/react-icons/dist/esm/icons/check-circle-icon'
 import ExclamationTriangleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-triangle-icon'
 import SyncAltIcon from '@patternfly/react-icons/dist/esm/icons/sync-alt-icon'
@@ -21,28 +21,32 @@ export const mockDashboardData: DashboardData = {
   },
   summaryStats: [
     {
-      icon: UsersIcon,
+      icon: CubesIcon,
       value: '19',
       label: 'Total Applications',
       detail: '16 analyzed, 3 pending',
+      to: '/applications',
     },
     {
       icon: CheckCircleIcon,
       value: '12',
       label: 'Ready to Migrate',
       detail: '63% of total applications',
+      to: '/applications',
     },
     {
       icon: ExclamationTriangleIcon,
       value: '4',
       label: 'Issues Found',
       detail: 'Requiring attention before migration',
+      to: '/issues',
     },
     {
       icon: SyncAltIcon,
       value: '63%',
       label: 'Migration Progress',
       detail: '12 of 19 apps migrated',
+      to: '/migration-waves',
     },
   ],
   quickActions: [
@@ -53,8 +57,8 @@ export const mockDashboardData: DashboardData = {
       to: '/applications',
     },
     {
-      title: 'Migrate Applications',
-      description: "We'll help you generate the assets needed to migrate your application to OpenShift",
+      title: 'Generate Migration Assets',
+      description: 'Generate deployment manifests and configuration to migrate your application to a target platform',
       icon: ArrowsAltHIcon,
       actionId: 'migrate',
     },

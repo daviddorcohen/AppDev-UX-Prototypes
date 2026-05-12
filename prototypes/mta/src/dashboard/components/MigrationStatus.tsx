@@ -6,10 +6,11 @@ import {
   GridItem,
   Stack,
   Flex,
-  Badge,
   Progress,
   Divider,
   Title,
+  Button,
+  Label,
 } from '@patternfly/react-core'
 import WaveSquareIcon from '@patternfly/react-icons/dist/esm/icons/wave-square-icon'
 import { useDashboard } from '../DashboardProvider'
@@ -30,27 +31,21 @@ export function MigrationStatus() {
           <WaveSquareIcon style={{ color: 'var(--pf-v6-global--info-color--100)' }} />
           Migration Status
         </Title>
-        <a href="#" onClick={(e) => { e.preventDefault(); navigateTo('/migration-waves') }} style={{ cursor: 'pointer' }}>View all waves</a>
+        <Button variant="link" onClick={() => navigateTo('/migration-waves')}>View all waves</Button>
       </Flex>
       <Card>
         <CardBody>
           <Grid hasGutter>
             {migrationWaves.map((wave) => (
               <GridItem key={wave.name} span={12} md={4}>
-                <Card variant="compact" isFlat style={{ border: '1px solid var(--pf-v6-global--BorderColor--100)', height: '100%' }}>
+                <Card style={{ border: '1px solid var(--pf-v6-global--BorderColor--100)', height: '100%' }}>
                   <CardBody>
                     <Stack hasGutter>
                       <div style={{ fontWeight: 600 }}>{wave.name}</div>
                       <Flex alignItems={{ default: 'alignItemsCenter' }} style={{ gap: 8 }}>
-                        <Badge
-                          style={
-                            wave.statusVariant === 'success'
-                              ? { backgroundColor: 'var(--pf-v6-global--success-color--100)', color: 'white' }
-                              : { backgroundColor: 'var(--pf-v6-global--info-color--100)', color: 'white' }
-                          }
-                        >
+                        <Label color={wave.statusVariant === 'success' ? 'green' : 'blue'}>
                           {wave.status}
-                        </Badge>
+                        </Label>
                       </Flex>
                       <div>
                         <Progress value={wave.progress} measureLocation="inside" />

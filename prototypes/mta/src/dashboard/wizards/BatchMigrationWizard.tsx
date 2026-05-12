@@ -289,17 +289,19 @@ export function BatchMigrationWizard({ isOpen, onClose }: BatchMigrationWizardPr
           Define where the migration results will be pushed. Each application will get its own branch in its source repository.
         </Content>
       </div>
-      <FormGroup label="Branch name pattern" fieldId="branch-pattern" helperText="Use {target} and {app} as placeholders. Example: migrate/quarkus/bookserverApp">
+      <FormGroup label="Branch name pattern" fieldId="branch-pattern">
         <TextInput
           id="branch-pattern"
           value={branchPattern}
           onChange={(_e, val) => setBranchPattern(val)}
         />
+        <Content component="small" style={{ color: 'var(--pf-t--global--text--color--subtle)', marginTop: 4 }}>
+          Use &#123;target&#125; and &#123;app&#125; as placeholders. Example: migrate/quarkus/bookserverApp
+        </Content>
       </FormGroup>
       <Switch
         id="create-pr-toggle"
-        label="Automatically create pull requests"
-        labelOff="Do not create pull requests"
+        label={createPR ? 'Automatically create pull requests' : 'Do not create pull requests'}
         isChecked={createPR}
         onChange={(_e, checked) => setCreatePR(checked)}
       />
@@ -428,15 +430,15 @@ export function BatchMigrationWizard({ isOpen, onClose }: BatchMigrationWizardPr
       <div>
         <Title headingLevel="h2">Migration progress</Title>
         <Content component="p">
-          {isRunning
+          {tasks.length > 0
             ? 'The migration agent is running for each selected application. Results will be pushed to branches as they complete.'
-            : 'Click "Start migration" to begin the batch migration process.'}
+            : 'Migration will begin automatically when you proceed to this step.'}
         </Content>
       </div>
       {tasks.length > 0 && (
         <Grid hasGutter>
           <GridItem span={3}>
-            <Card isFlat isCompact>
+            <Card>
               <CardBody>
                 <Stack>
                   <Title headingLevel="h3" size="2xl">
@@ -448,7 +450,7 @@ export function BatchMigrationWizard({ isOpen, onClose }: BatchMigrationWizardPr
             </Card>
           </GridItem>
           <GridItem span={3}>
-            <Card isFlat isCompact>
+            <Card>
               <CardBody>
                 <Stack>
                   <Title headingLevel="h3" size="2xl">
@@ -460,7 +462,7 @@ export function BatchMigrationWizard({ isOpen, onClose }: BatchMigrationWizardPr
             </Card>
           </GridItem>
           <GridItem span={3}>
-            <Card isFlat isCompact>
+            <Card>
               <CardBody>
                 <Stack>
                   <Title headingLevel="h3" size="2xl">
@@ -472,7 +474,7 @@ export function BatchMigrationWizard({ isOpen, onClose }: BatchMigrationWizardPr
             </Card>
           </GridItem>
           <GridItem span={3}>
-            <Card isFlat isCompact>
+            <Card>
               <CardBody>
                 <Stack>
                   <Title headingLevel="h3" size="2xl">
@@ -552,8 +554,6 @@ export function BatchMigrationWizard({ isOpen, onClose }: BatchMigrationWizardPr
       onClose={handleClose}
       aria-label="Batch migration wizard"
       variant={ModalVariant.large}
-      hasNoBodyWrapper
-      showClose={false}
       style={{ overflow: 'hidden' }}
     >
       <Wizard
