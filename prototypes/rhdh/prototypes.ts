@@ -111,4 +111,14 @@ export const rhdhPrototypes: Prototype[] = [
     status: 'Active',
     lastUpdated: 'May 20, 2026',
   },
+  {
+    name: 'Conversion Hub',
+    project: 'Chef-to-Ansible Migration Tool',
+    product: 'RHDH',
+    description: 'A conversion hub for Red Hat Developer Hub that enables teams to initiate and track the asynchronous conversion of Chef cookbooks into production-ready Ansible Playbooks, with detailed status tracking and plan review workflows.',
+    externalUrl: 'https://migration-hub.pages.redhat.com/',
+    path: '',
+    status: 'Active',
+    lastUpdated: 'May 20, 2026',
+  },
 ]
