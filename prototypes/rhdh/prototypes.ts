@@ -101,4 +101,14 @@ export const rhdhPrototypes: Prototype[] = [
     status: 'Active',
     lastUpdated: 'May 6, 2026',
   },
+  {
+    name: 'Gamification',
+    project: 'Badge Management & Leaderboard System',
+    product: 'RHDH',
+    description: 'A gamification system for Red Hat Developer Hub that lets administrators create and manage badges, assign them to members based on platform activity, and display leaderboards to encourage engagement and recognize contributions.',
+    externalUrl: 'https://backstage-scorecards-b86fc7.pages.redhat.com/',
+    path: '',
+    status: 'Active',
+    lastUpdated: 'May 20, 2026',
+  },
 ]
