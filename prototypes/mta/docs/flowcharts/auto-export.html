@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Exporting Flowcharts...</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  body { font-family: -apple-system, sans-serif; margin: 40px; background: #f5f5f5; }
+  h1 { color: #333; }
+  #log { background: white; border-radius: 8px; padding: 20px; font-family: monospace; font-size: 14px; line-height: 2; }
+  .ok { color: #28a745; }
+  .err { color: #dc3545; }
+  .pending { color: #666; }
+</style>
+</head>
+<body>
+<h1>Exporting Flowcharts as PNG...</h1>
+<div id="log"></div>
+
+<div style="position:absolute;left:-9999px;top:0;">
+<pre class="mermaid" id="d01">
+flowchart LR
+    A["Create Agent Profile"] --> B["Set Name + Description\n+ Mission Definition"]
+    B --> C["Configure Model\n(Provider, Model, Credentials)"]
+    C --> D["Attach Recipes/Guidelines\n(select from available)"]
+    D --> E["Link to Archetypes\n(for auto-association)"]
+    E --> F["Agent Ready\nfor Use in Plans"]
+</pre>
+<pre class="mermaid" id="d02">
+flowchart TD
+    A["Create Recipe"] --> B["Define Name +\nDescription"]
+    B --> C["Set Repository URL\n+ Branch/Tag"]
+    C --> D["Choose Scope Level\n(Agent/Archetype/\nTarget/Application)"]
+    D --> E["Sync from Repository"]
+    E --> F["Preview Content"]
+    F --> G["Recipe Available\nfor Agent Association"]
+    H["Repository Updated"] --> I["Manual or Auto Sync"]
+    I --> J["Version Bumped"]
+    J --> F
+</pre>
+<pre class="mermaid" id="d03">
+flowchart TD
+    A["Start New Plan"] --> B["Step 1:\nSelect Target Applications"]
+    B --> C["Step 2:\nChoose Agent Profile"]
+    C --> D["Step 3:\nDefine Migration Goal\n(Rich Markdown Editor)"]
+    D --> E["Step 4:\nCompose Stages\n(Optional Multi-Agent)"]
+    E --> F["Step 5:\nConfigure Execution\n(Branch, Parallelism,\nResource Limits)"]
+    F --> G["Step 6:\nReview Full Plan"]
+    G --> H{"Test Run\n(1-2 Apps)"}
+    H --> I["Evaluate Results\n(Review PR, Logs,\nIssues Fixed)"]
+    I -->|"Not Satisfied\n(Iterate)"| D
+    I -->|"Satisfied"| J["Run at Scale\n(Remaining Apps)"]
+    J --> K["Monitor Progress\nin Migration Runs"]
+</pre>
+<pre class="mermaid" id="d04">
+flowchart TD
+    A["Agent Runs\nMigration"] --> B["Agent Documents:\n- What changes were made\n- Why they were needed\n- What failed first\n- Lessons learned"]
+    B --> C["Written to\nKnowledge Base\n(Solution Server)"]
+    C --> D["Architect Reviews\nKnowledge Entries"]
+    D --> E{"Decision"}
+    E -->|"Approve"| F["Promoted to\nApproved Knowledge"]
+    E -->|"Edit"| G["Architect Refines\nthe Entry"]
+    E -->|"Reject"| H["Entry Removed\nor Flagged"]
+    G --> F
+    F --> I["Future Agents\nUse This Knowledge"]
+    I --> J["Enables Transition\nto Cheaper Models"]
+</pre>
+<pre class="mermaid" id="d05">
+flowchart LR
+    A["Developer Selects\nApplication"] --> B["See Available\nAgent Profiles\n(Pre-configured\nby Architect)"]
+    B --> C["Click 'Migrate'"]
+    C --> D["Agent Runs\nwith Inherited\nConfiguration"]
+    D --> E["PR Created\nwith Changes"]
+    E --> F{"Review PR"}
+    F -->|"Merge"| G["Migration Complete"]
+    F -->|"Needs Work"| H["Continue Locally\n(Inherited Guidelines\nStill Active)"]
+    H --> G
+</pre>
+<pre class="mermaid" id="d06">
+flowchart TD
+    A["Phase 1:\nRun 3-5 Migrations\non Expensive Model\n(e.g., Claude Opus)"] --> B["Agent Takes Notes:\nLessons Learned\nWritten to\nKnowledge Base"]
+    B --> C["Architect Reviews\nand Curates\nKnowledge"]
+    C --> D["Phase 2:\nSwitch Agent to\nCheaper Model\n(e.g., Ollama/Kimi)"]
+    D --> E["Cheaper Model Uses\nKnowledge Base\nfor Context"]
+    E --> F{"Results\nComparable?"}
+    F -->|"Yes"| G["Scale with\nCheap Model\n(90%+ Cost Savings)"]
+    F -->|"No"| H["Run More on\nExpensive Model\nto Build Knowledge"]
+    H --> B
+</pre>
+</div>
+
+<script>
+mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+
+const diagrams = [
+  { id: 'd01', name: '01-agent-configuration.png' },
+  { id: 'd02', name: '02-recipe-management.png' },
+  { id: 'd03', name: '03-plan-building.png' },
+  { id: 'd04', name: '04-knowledge-base.png' },
+  { id: 'd05', name: '05-developer-experience.png' },
+  { id: 'd06', name: '06-cost-optimization.png' },
+];
+
+const log = document.getElementById('log');
+function addLog(msg, cls) {
+  const div = document.createElement('div');
+  div.className = cls;
+  div.textContent = msg;
+  log.appendChild(div);
+}
+
+async function svgToPng(svgEl, scale) {
+  const clone = svgEl.cloneNode(true);
+  clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  clone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+
+  const styles = document.querySelectorAll('style');
+  styles.forEach(s => {
+    const styleClone = s.cloneNode(true);
+    clone.insertBefore(styleClone, clone.firstChild);
+  });
+
+  const svgData = new XMLSerializer().serializeToString(clone);
+  const bbox = svgEl.getBoundingClientRect();
+  const vb = svgEl.getAttribute('viewBox');
+  let w, h;
+  if (vb) {
+    const parts = vb.split(/[\s,]+/).map(Number);
+    w = parts[2]; h = parts[3];
+  } else {
+    w = bbox.width; h = bbox.height;
+  }
+
+  const canvas = document.createElement('canvas');
+  canvas.width = w * scale;
+  canvas.height = h * scale;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(scale, scale);
+  ctx.fillStyle = 'white';
+  ctx.fillRect(0, 0, w, h);
+
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    const b64 = btoa(unescape(encodeURIComponent(svgData)));
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, w, h);
+      resolve(canvas.toDataURL('image/png'));
+    };
+    img.onerror = (e) => reject(new Error('Image load failed'));
+    img.src = 'data:image/svg+xml;base64,' + b64;
+  });
+}
+
+async function exportAll() {
+  addLog('Waiting for Mermaid to render...', 'pending');
+  await new Promise(r => setTimeout(r, 2000));
+
+  for (const d of diagrams) {
+    addLog(`Exporting ${d.name}...`, 'pending');
+    const container = document.getElementById(d.id);
+    const svg = container.querySelector('svg');
+    if (!svg) {
+      addLog(`  SKIP: ${d.name} - SVG not found`, 'err');
+      continue;
+    }
+    try {
+      const dataUrl = await svgToPng(svg, 3);
+      const resp = await fetch('/save/' + encodeURIComponent(d.name), {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: dataUrl,
+      });
+      const result = await resp.json();
+      addLog(`  SAVED: ${result.path}`, 'ok');
+    } catch (err) {
+      addLog(`  ERROR: ${d.name} - ${err.message}`, 'err');
+    }
+  }
+  addLog('\\nAll done! Check ~/Downloads/', 'ok');
+}
+
+exportAll();
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+flowchart TD
+    A["Agent Runs\nMigration"] --> B["Agent Documents:\n- What changes were made\n- Why they were needed\n- What failed first\n- Lessons learned"]
+    B --> C["Written to\nKnowledge Base\n(Solution Server)"]
+    C --> D["Architect Reviews\nKnowledge Entries"]
+    D --> E{"Decision"}
+    E -->|"Approve"| F["Promoted to\nApproved Knowledge"]
+    E -->|"Edit"| G["Architect Refines\nthe Entry"]
+    E -->|"Reject"| H["Entry Removed\nor Flagged"]
+    G --> F
+    F --> I["Future Agents\nUse This Knowledge"]
+    I --> J["Enables Transition\nto Cheaper Models"]

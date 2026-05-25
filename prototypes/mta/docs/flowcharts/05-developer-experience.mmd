@@ -1,0 +1,9 @@
+flowchart LR
+    A["Developer Selects\nApplication"] --> B["See Available\nAgent Profiles\n(Pre-configured\nby Architect)"]
+    B --> C["Click 'Migrate'"]
+    C --> D["Agent Runs\nwith Inherited\nConfiguration"]
+    D --> E["PR Created\nwith Changes"]
+    E --> F{"Review PR"}
+    F -->|"Merge"| G["Migration Complete"]
+    F -->|"Needs Work"| H["Continue Locally\n(Inherited Guidelines\nStill Active)"]
+    H --> G

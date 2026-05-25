@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import {
   Page, Masthead, MastheadMain, MastheadBrand, MastheadToggle, MastheadContent,
-  Nav, NavItem, NavList,
+  Nav, NavItem, NavList, NavExpandable,
   PageSidebar, PageSidebarBody, PageSection,
   Button, SkipToContent,
   Toolbar, ToolbarContent, ToolbarItem,
@@ -9,48 +9,96 @@ import {
   Dropdown, DropdownList, DropdownItem,
   MenuToggle, MenuToggleElement,
   Divider,
+  Select, SelectOption, SelectList,
+  Badge,
 } from '@patternfly/react-core'
 import { NavLink, useLocation } from 'react-router-dom'
 import BarsIcon from '@patternfly/react-icons/dist/esm/icons/bars-icon'
 import QuestionCircleIcon from '@patternfly/react-icons/dist/esm/icons/question-circle-icon'
 import BellIcon from '@patternfly/react-icons/dist/esm/icons/bell-icon'
 import ExternalLinkAltIcon from '@patternfly/react-icons/dist/esm/icons/external-link-alt-icon'
+import InfoCircleIcon from '@patternfly/react-icons/dist/esm/icons/info-circle-icon'
 import React, { useState } from 'react'
 import { QuickStartContainer, QuickStartCatalogPage } from '@patternfly/quickstarts'
 import '@patternfly/quickstarts/dist/quickstarts.min.css'
 import { konveyorQuickStart } from './quickstarts/konveyor-quickstart'
 import { DashboardProvider, DashboardPage, mockDashboardData } from './dashboard'
 import { Applications } from './pages/Applications'
-import { PlaceholderPage } from './pages/PlaceholderPage'
+import { Archetypes } from './pages/Archetypes'
+import { MigrationWaves } from './pages/MigrationWaves'
+import { Reports } from './pages/Reports'
+import { Issues } from './pages/Issues'
+import { Insights } from './pages/Insights'
+import { Dependencies } from './pages/Dependencies'
+import { Controls } from './pages/Controls'
+import { AnalysisProfiles } from './pages/AnalysisProfiles'
+import { CustomMigrationTargets } from './pages/CustomMigrationTargets'
+import { TaskManager } from './pages/TaskManager'
+import { General } from './pages/admin/General'
+import { Credentials } from './pages/admin/Credentials'
+import { GitRepositories } from './pages/admin/GitRepositories'
+import { SubversionRepositories } from './pages/admin/SubversionRepositories'
+import { MavenRepositories } from './pages/admin/MavenRepositories'
+import { Proxy } from './pages/admin/Proxy'
+import { JiraInstances } from './pages/admin/JiraInstances'
+import { AssessmentQuestionnaires } from './pages/admin/AssessmentQuestionnaires'
+import { SourcePlatforms } from './pages/admin/SourcePlatforms'
+import { Generators } from './pages/admin/Generators'
+import { AgentsList } from './pages/agentic/AgentsList'
+import { AgentDetail } from './pages/agentic/AgentDetail'
+import { RecipesList } from './pages/agentic/RecipesList'
+import { RecipeDetail } from './pages/agentic/RecipeDetail'
+import { PlansList } from './pages/agentic/PlansList'
+import { PlanBuilder } from './pages/agentic/PlanBuilder'
+import { KnowledgeBase } from './pages/agentic/KnowledgeBase'
+import { MigrationRuns } from './pages/agentic/MigrationRuns'
 import './App.css'
 import '@patternfly/react-core/dist/styles/base.css'
 
+type Perspective = 'migration' | 'administration'
+
 const allQuickStarts = [konveyorQuickStart]
 
-const navItems = [
-  { to: '/dashboard', label: 'Dashboard' },
-  { to: '/applications', label: 'Application inventory' },
-  { to: '/archetypes', label: 'Archetypes' },
-  { to: '/reports', label: 'Reports' },
-  { to: '/controls', label: 'Controls' },
-  { to: '/migration-waves', label: 'Migration waves' },
-  { to: '/issues', label: 'Issues' },
-  { to: '/insights', label: 'Insights' },
-  { to: '/dependencies', label: 'Dependencies' },
-  { to: '/task-manager', label: 'Task Manager' },
-  { to: '/custom-migration-targets', label: 'Custom migration targets' },
-  { to: '/analysis-profiles', label: 'Analysis Profiles' },
+const migrationPaths = [
+  '/dashboard', '/applications', '/archetypes', '/migration-waves',
+  '/reports', '/issues', '/insights', '/dependencies',
+  '/analysis-profiles', '/controls', '/custom-migration-targets', '/task-manager',
+  '/agents', '/recipes', '/plans', '/knowledge-base', '/migration-runs',
 ]
+
+const adminPaths = [
+  '/general', '/credentials',
+  '/repositories/git', '/repositories/svn', '/repositories/maven',
+  '/proxy', '/jira', '/assessment-questionnaires',
+  '/source-platforms', '/generators',
+]
+
+function getPerspectiveForPath(pathname: string): Perspective {
+  if (adminPaths.some(p => pathname.startsWith(p))) return 'administration'
+  return 'migration'
+}
 
 export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [helpMenuOpen, setHelpMenuOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const [perspectiveOpen, setPerspectiveOpen] = useState(false)
   const [activeQuickStartID, setActiveQuickStartID] = useState('')
   const [allQuickStartStates, setAllQuickStartStates] = useState({})
   const location = useLocation()
   const navigate = useNavigate()
   const pageId = 'main-content'
+
+  const perspective = getPerspectiveForPath(location.pathname)
+
+  const onPerspectiveSelect = (_event: React.MouseEvent | undefined, value: string | number | undefined) => {
+    setPerspectiveOpen(false)
+    if (value === 'migration' && perspective !== 'migration') {
+      navigate('/dashboard')
+    } else if (value === 'administration' && perspective !== 'administration') {
+      navigate('/general')
+    }
+  }
 
   const onHelpMenuSelect = (_event: React.MouseEvent | undefined, value: string | number | undefined) => {
     setHelpMenuOpen(false)
@@ -62,6 +110,143 @@ export default function App() {
   const onUserMenuSelect = () => {
     setUserMenuOpen(false)
   }
+
+  const isActive = (path: string) => location.pathname === path || location.pathname.startsWith(path + '/')
+  const isGroupActive = (paths: string[]) => paths.some(p => location.pathname === p || location.pathname.startsWith(p + '/'))
+
+  const migrationNav = (
+    <Nav aria-label="Migration navigation">
+      <NavList>
+        <NavItem isActive={isActive('/dashboard')}>
+          <NavLink to="/dashboard">Dashboard</NavLink>
+        </NavItem>
+        <NavExpandable
+          title="Applications"
+          isActive={isGroupActive(['/applications', '/archetypes', '/migration-waves'])}
+          isExpanded
+        >
+          <NavItem isActive={isActive('/applications')}>
+            <NavLink to="/applications">Application inventory</NavLink>
+          </NavItem>
+          <NavItem isActive={isActive('/archetypes')}>
+            <NavLink to="/archetypes">Archetypes</NavLink>
+          </NavItem>
+          <NavItem isActive={isActive('/migration-waves')}>
+            <NavLink to="/migration-waves">Migration waves</NavLink>
+          </NavItem>
+        </NavExpandable>
+        <NavExpandable
+          title="Agentic Migration"
+          isActive={isGroupActive(['/agents', '/recipes', '/plans', '/knowledge-base', '/migration-runs'])}
+          isExpanded
+        >
+          <NavItem isActive={isActive('/agents')}>
+            <NavLink to="/agents">Agents</NavLink>
+          </NavItem>
+          <NavItem isActive={isActive('/recipes')}>
+            <NavLink to="/recipes">Recipes</NavLink>
+          </NavItem>
+          <NavItem isActive={isActive('/plans')}>
+            <NavLink to="/plans">Plans</NavLink>
+          </NavItem>
+          <NavItem isActive={isActive('/knowledge-base')}>
+            <NavLink to="/knowledge-base">Knowledge Base</NavLink>
+          </NavItem>
+          <NavItem isActive={isActive('/migration-runs')}>
+            <NavLink to="/migration-runs">Migration Runs</NavLink>
+          </NavItem>
+        </NavExpandable>
+        <NavExpandable
+          title="Analysis Results"
+          isActive={isGroupActive(['/reports', '/issues', '/insights', '/dependencies'])}
+          isExpanded
+        >
+          <NavItem isActive={isActive('/reports')}>
+            <NavLink to="/reports">Reports</NavLink>
+          </NavItem>
+          <NavItem isActive={isActive('/issues')}>
+            <NavLink to="/issues">Issues</NavLink>
+          </NavItem>
+          <NavItem isActive={isActive('/insights')}>
+            <NavLink to="/insights">Insights</NavLink>
+          </NavItem>
+          <NavItem isActive={isActive('/dependencies')}>
+            <NavLink to="/dependencies">Dependencies</NavLink>
+          </NavItem>
+        </NavExpandable>
+        <NavExpandable
+          title="Configuration"
+          isActive={isGroupActive(['/analysis-profiles', '/controls', '/custom-migration-targets', '/task-manager'])}
+          isExpanded
+        >
+          <NavItem isActive={isActive('/analysis-profiles')}>
+            <NavLink to="/analysis-profiles">Analysis Profiles</NavLink>
+          </NavItem>
+          <NavItem isActive={isActive('/controls')}>
+            <NavLink to="/controls">Controls</NavLink>
+          </NavItem>
+          <NavItem isActive={isActive('/custom-migration-targets')}>
+            <NavLink to="/custom-migration-targets">Custom migration targets</NavLink>
+          </NavItem>
+          <NavItem isActive={isActive('/task-manager')}>
+            <NavLink to="/task-manager">Task Manager</NavLink>
+          </NavItem>
+        </NavExpandable>
+      </NavList>
+    </Nav>
+  )
+
+  const administrationNav = (
+    <Nav aria-label="Administration navigation">
+      <NavList>
+        <NavItem isActive={isActive('/general')}>
+          <NavLink to="/general">General</NavLink>
+        </NavItem>
+        <NavItem isActive={isActive('/credentials')}>
+          <NavLink to="/credentials">Credentials</NavLink>
+        </NavItem>
+        <NavExpandable
+          title="Repositories"
+          isActive={isGroupActive(['/repositories/git', '/repositories/svn', '/repositories/maven'])}
+          isExpanded
+        >
+          <NavItem isActive={isActive('/repositories/git')}>
+            <NavLink to="/repositories/git">Git</NavLink>
+          </NavItem>
+          <NavItem isActive={isActive('/repositories/svn')}>
+            <NavLink to="/repositories/svn">Subversion</NavLink>
+          </NavItem>
+          <NavItem isActive={isActive('/repositories/maven')}>
+            <NavLink to="/repositories/maven">Maven</NavLink>
+          </NavItem>
+        </NavExpandable>
+        <NavItem isActive={isActive('/proxy')}>
+          <NavLink to="/proxy">Proxy</NavLink>
+        </NavItem>
+        <NavExpandable
+          title="Issue management"
+          isActive={isGroupActive(['/jira'])}
+          isExpanded
+        >
+          <NavItem isActive={isActive('/jira')}>
+            <NavLink to="/jira">Jira</NavLink>
+          </NavItem>
+        </NavExpandable>
+        <NavItem isActive={isActive('/assessment-questionnaires')}>
+          <NavLink to="/assessment-questionnaires">Assessment questionnaires</NavLink>
+        </NavItem>
+        <NavItem isActive={isActive('/source-platforms')}>
+          <NavLink to="/source-platforms">Source platforms</NavLink>
+        </NavItem>
+        <NavItem isActive={isActive('/generators')}>
+          <NavLink to="/generators">Generators</NavLink>
+        </NavItem>
+        <NavItem isActive={isActive('/task-manager')}>
+          <NavLink to="/task-manager">Task Manager</NavLink>
+        </NavItem>
+      </NavList>
+    </Nav>
+  )
 
   const masthead = (
     <Masthead>
@@ -77,6 +262,11 @@ export default function App() {
         <Toolbar isFullHeight isStatic>
           <ToolbarContent>
             <ToolbarItem align={{ default: 'alignEnd' }}>
+              <Button variant="plain" aria-label="Count of queued tasks">
+                <Badge screenReaderText="queued tasks">0</Badge>
+              </Button>
+            </ToolbarItem>
+            <ToolbarItem>
               <Button variant="plain" aria-label="Notifications"><BellIcon /></Button>
             </ToolbarItem>
             <ToolbarItem>
@@ -116,6 +306,21 @@ export default function App() {
             </ToolbarItem>
             <ToolbarItem>
               <Dropdown
+                isOpen={false}
+                popperProps={{ position: 'right' }}
+                toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+                  <MenuToggle ref={toggleRef} variant="plain" aria-label="About">
+                    <InfoCircleIcon />
+                  </MenuToggle>
+                )}
+              >
+                <DropdownList>
+                  <DropdownItem key="about">About</DropdownItem>
+                </DropdownList>
+              </Dropdown>
+            </ToolbarItem>
+            <ToolbarItem>
+              <Dropdown
                 isOpen={userMenuOpen}
                 onSelect={onUserMenuSelect}
                 onOpenChange={setUserMenuOpen}
@@ -148,15 +353,28 @@ export default function App() {
   const sidebar = (
     <PageSidebar>
       <PageSidebarBody>
-        <Nav aria-label="Global navigation">
-          <NavList>
-            {navItems.map((item) => (
-              <NavItem key={item.to} isActive={location.pathname === item.to}>
-                <NavLink to={item.to}>{item.label}</NavLink>
-              </NavItem>
-            ))}
-          </NavList>
-        </Nav>
+        <Select
+          isOpen={perspectiveOpen}
+          onOpenChange={setPerspectiveOpen}
+          onSelect={onPerspectiveSelect}
+          selected={perspective}
+          toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+            <MenuToggle
+              ref={toggleRef}
+              onClick={() => setPerspectiveOpen(!perspectiveOpen)}
+              isExpanded={perspectiveOpen}
+              isFullWidth
+            >
+              {perspective === 'migration' ? 'Migration' : 'Administration'}
+            </MenuToggle>
+          )}
+        >
+          <SelectList>
+            <SelectOption value="migration">Migration</SelectOption>
+            <SelectOption value="administration">Administration</SelectOption>
+          </SelectList>
+        </Select>
+        {perspective === 'migration' ? migrationNav : administrationNav}
       </PageSidebarBody>
     </PageSidebar>
   )
@@ -187,16 +405,38 @@ export default function App() {
             } />
             <Route path="/applications" element={<Applications />} />
             <Route path="/quickstarts" element={<QuickStartCatalogPage title="Quickstarts" hint="Step-by-step guides to get the most out of Konveyor Tackle." showFilter />} />
-            <Route path="/archetypes" element={<PlaceholderPage title="Archetypes" description="Manage application archetypes for assessment and review." />} />
-            <Route path="/reports" element={<PlaceholderPage title="Reports" description="View analysis reports for your applications." />} />
-            <Route path="/controls" element={<PlaceholderPage title="Controls" description="Manage stakeholders, stakeholder groups, job functions, business services, and tag categories." />} />
-            <Route path="/migration-waves" element={<PlaceholderPage title="Migration waves" description="Organize applications into migration waves for phased deployment." />} />
-            <Route path="/issues" element={<PlaceholderPage title="Issues" description="View and manage issues identified during analysis." />} />
-            <Route path="/insights" element={<PlaceholderPage title="Insights" description="Review AI-generated insights for your application portfolio." />} />
-            <Route path="/dependencies" element={<PlaceholderPage title="Dependencies" description="Manage and visualize application dependencies." />} />
-            <Route path="/task-manager" element={<PlaceholderPage title="Task Manager" description="Monitor running and completed analysis tasks." />} />
-            <Route path="/custom-migration-targets" element={<PlaceholderPage title="Custom migration targets" description="Define custom migration targets for analysis rules." />} />
-            <Route path="/analysis-profiles" element={<PlaceholderPage title="Analysis Profiles" description="Configure analysis profiles with custom rule sets." />} />
+            {/* Migration perspective pages */}
+            <Route path="/archetypes" element={<Archetypes />} />
+            <Route path="/migration-waves" element={<MigrationWaves />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/issues" element={<Issues />} />
+            <Route path="/insights" element={<Insights />} />
+            <Route path="/dependencies" element={<Dependencies />} />
+            <Route path="/controls" element={<Controls />} />
+            <Route path="/analysis-profiles" element={<AnalysisProfiles />} />
+            <Route path="/custom-migration-targets" element={<CustomMigrationTargets />} />
+            <Route path="/task-manager" element={<TaskManager />} />
+            {/* Agentic migration pages */}
+            <Route path="/agents" element={<AgentsList />} />
+            <Route path="/agents/:id" element={<AgentDetail />} />
+            <Route path="/recipes" element={<RecipesList />} />
+            <Route path="/recipes/:id" element={<RecipeDetail />} />
+            <Route path="/plans" element={<PlansList />} />
+            <Route path="/plans/new" element={<PlanBuilder />} />
+            <Route path="/plans/:id/edit" element={<PlanBuilder />} />
+            <Route path="/knowledge-base" element={<KnowledgeBase />} />
+            <Route path="/migration-runs" element={<MigrationRuns />} />
+            {/* Administration perspective pages */}
+            <Route path="/general" element={<General />} />
+            <Route path="/credentials" element={<Credentials />} />
+            <Route path="/repositories/git" element={<GitRepositories />} />
+            <Route path="/repositories/svn" element={<SubversionRepositories />} />
+            <Route path="/repositories/maven" element={<MavenRepositories />} />
+            <Route path="/proxy" element={<Proxy />} />
+            <Route path="/jira" element={<JiraInstances />} />
+            <Route path="/assessment-questionnaires" element={<AssessmentQuestionnaires />} />
+            <Route path="/source-platforms" element={<SourcePlatforms />} />
+            <Route path="/generators" element={<Generators />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </PageSection>

@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Agentic Migration UX Specification</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  @page { margin: 1.5cm; size: A4; }
+  @media print {
+    body { font-size: 11pt; }
+    h1 { page-break-before: avoid; }
+    h2 { page-break-before: always; }
+    h2:first-of-type { page-break-before: avoid; }
+    table, pre, .mermaid { page-break-inside: avoid; }
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: #1a1a1a;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+  h1 {
+    font-size: 28px;
+    border-bottom: 3px solid #0066cc;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+    color: #0066cc;
+  }
+  h2 {
+    font-size: 22px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 8px;
+    margin-top: 40px;
+    color: #333;
+  }
+  h3 {
+    font-size: 18px;
+    margin-top: 30px;
+    color: #444;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 10px 12px;
+    text-align: left;
+  }
+  th {
+    background-color: #f0f4f8;
+    font-weight: 600;
+    color: #333;
+  }
+  tr:nth-child(even) { background-color: #fafbfc; }
+  code {
+    background-color: #f0f4f8;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 13px;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  }
+  pre {
+    background-color: #f6f8fa;
+    border: 1px solid #e1e4e8;
+    border-radius: 6px;
+    padding: 16px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  pre code {
+    background: none;
+    padding: 0;
+  }
+  blockquote {
+    border-left: 4px solid #0066cc;
+    margin: 16px 0;
+    padding: 8px 16px;
+    color: #555;
+    background-color: #f8f9fa;
+  }
+  hr {
+    border: none;
+    border-top: 2px solid #e1e4e8;
+    margin: 40px 0;
+  }
+  ul, ol { padding-left: 24px; }
+  li { margin: 4px 0; }
+  strong { color: #111; }
+  a { color: #0066cc; text-decoration: none; }
+  .mermaid {
+    text-align: center;
+    margin: 24px 0;
+    padding: 16px;
+    background: #fafbfc;
+    border: 1px solid #e1e4e8;
+    border-radius: 6px;
+  }
+</style>
+</head>
+<body>
+<h1>Agentic Migration UX Specification</h1>
+<h2>1. Executive Summary</h2>
+<p>MTA (Migration Toolkit for Applications) is expanding to support <strong>enterprise-scale agentic migrations</strong>. This document defines the UX for a system where <strong>Enterprise Architects</strong> define corporate standards, agent configurations, and migration plans that are consumed by <strong>hundreds or thousands of developers/migrators</strong> at scale.</p>
+<p>The core value proposition: augment trusted users (architects) with tools to make untrusted users (developers) more productive -- while maintaining full control, traceability, and adherence to corporate standards.</p>
+<h3>Business Context</h3>
+<ul>
+<li>Large enterprises (FSI, defense, public administration) have thousands of legacy applications sitting untouched on legacy infrastructure</li>
+<li>These organizations don&#39;t dare touch them due to risk, cost, and lack of control</li>
+<li>MTA&#39;s differentiator is <strong>extensibility and customization</strong> -- adapting to each organization&#39;s custom technologies and standards</li>
+<li>Agentic migration enables automating 50-60%+ of migration work, saving hundreds of millions of dollars</li>
+<li>The system learns over time, enabling transition from expensive frontier models to cheaper/open-source models</li>
+</ul>
+<hr>
+<h2>2. User Personas</h2>
+<h3>Enterprise Architect (Trusted)</h3>
+<ul>
+<li>Defines corporate standards, agent configurations, models, and guidelines</li>
+<li>Has deep knowledge of migration paths and organizational technology landscape</li>
+<li>Spends significant time (1+ hours) crafting and refining migration plans</li>
+<li>Reviews and curates the knowledge base</li>
+<li>Controls what migrators can and cannot do</li>
+<li>Iterates on 3-5 migrations manually before scaling to hundreds</li>
+</ul>
+<h3>Developer / Migrator (At Scale)</h3>
+<ul>
+<li>Consumes pre-defined configurations -- does not need deep migration expertise</li>
+<li>Inherits agent profiles, guidelines, and restrictions from the architect</li>
+<li>Runs migrations via a simplified interface (select app, click migrate)</li>
+<li>Continues work locally on their workstation with inherited guidelines</li>
+<li>Fixes remaining issues that the agent couldn&#39;t handle (the &quot;last mile&quot;)</li>
+</ul>
+<hr>
+<h2>3. New Entities</h2>
+<h3>3.1 Agent</h3>
+<p>An <strong>Agent</strong> is a named profile that defines <em>who</em> performs the migration work.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Name</strong></td>
+<td>Human-readable identifier (e.g., &quot;Java Migration Agent&quot;)</td>
+</tr>
+<tr>
+<td><strong>Description</strong></td>
+<td>Purpose and scope of this agent</td>
+</tr>
+<tr>
+<td><strong>Definition</strong></td>
+<td>The agent&#39;s core mission statement (lives in the DB)</td>
+</tr>
+<tr>
+<td><strong>Model</strong></td>
+<td>The LLM backing the agent -- provider, model name, linked credentials</td>
+</tr>
+<tr>
+<td><strong>Guidelines/Recipes</strong></td>
+<td>One or more sets of rules, skills, tools, and constraints</td>
+</tr>
+<tr>
+<td><strong>Archetype Associations</strong></td>
+<td>Which archetypes auto-inherit this agent configuration</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>Active / Draft / Disabled</td>
+</tr>
+</tbody></table>
+<p><strong>Key Design Points:</strong></p>
+<ul>
+<li>The model is deliberately separated from guidelines because architects may swap models (expensive → cheap) as the knowledge base grows</li>
+<li>Different models may be assigned per archetype/application type based on cost and capability needs</li>
+<li>Model credentials are linked to the existing Konveyor identity/credentials system</li>
+<li>The agent definition (mission) is distinct from guidelines (skills/rules) -- similar to how Claude has an <code>agent.md</code> defining the agent itself, plus separate skill files</li>
+</ul>
+<h3>3.2 Agent Recipe / Guidelines</h3>
+<p>A <strong>Recipe</strong> (also called Guidelines) is a reusable, versioned set of rules and context that gets injected into agent prompts.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Name</strong></td>
+<td>Human-readable identifier (e.g., &quot;Golang Coding Conventions&quot;)</td>
+</tr>
+<tr>
+<td><strong>Description</strong></td>
+<td>What standards/rules this recipe defines</td>
+</tr>
+<tr>
+<td><strong>Repository URL</strong></td>
+<td>Git repo containing the guideline documents</td>
+</tr>
+<tr>
+<td><strong>Branch / Tag</strong></td>
+<td>Pinned version for reproducibility and auditability</td>
+</tr>
+<tr>
+<td><strong>Scope Level</strong></td>
+<td>Where in the hierarchy this applies: Agent / Archetype / Target Profile / Application</td>
+</tr>
+<tr>
+<td><strong>Content Type</strong></td>
+<td>Rules, Skills, Tools, Coding Standards, Testing Standards, Commit Conventions</td>
+</tr>
+<tr>
+<td><strong>Last Synced</strong></td>
+<td>When the recipe was last pulled from the repository</td>
+</tr>
+</tbody></table>
+<p><strong>Key Design Points:</strong></p>
+<ul>
+<li>Guidelines live in <strong>git repositories</strong> so they can be authored, versioned, and reviewed through standard development workflows</li>
+<li>Recipes are <strong>pinned to specific versions/tags</strong> -- critical for traceability in regulated industries</li>
+<li>Before an agent runs, a sync step ensures all pinned recipes are up to date</li>
+<li>The <strong>hierarchy</strong> is essential: guidelines can be defined at multiple levels and are inherited downward:</li>
+</ul>
+<pre><code>Agent Level (broadest)
+  └── Archetype Level
+        └── Target Profile Level
+              └── Application Level (most specific)
+</code></pre>
+<ul>
+<li>Example: An agent-level recipe defines &quot;always follow corporate commit standards.&quot; An archetype-level recipe for &quot;Spring Boot Apps&quot; adds &quot;use Spring Boot 3.x migration patterns.&quot; A target-level recipe for &quot;Quarkus&quot; adds &quot;follow Quarkus best practices.&quot; An application-level recipe for a specific snowflake app adds &quot;this app uses a custom ORM, handle it this way.&quot;</li>
+</ul>
+<h3>3.3 Agent Plan</h3>
+<p>An <strong>Agent Plan</strong> is the execution goal -- what you are asking the agent to do.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Name</strong></td>
+<td>Human-readable identifier (e.g., &quot;EAP6 to Quarkus Migration&quot;)</td>
+</tr>
+<tr>
+<td><strong>Description</strong></td>
+<td>High-level summary of the migration objective</td>
+</tr>
+<tr>
+<td><strong>Goal / Prompt</strong></td>
+<td>Detailed markdown-based description of what the agent should accomplish</td>
+</tr>
+<tr>
+<td><strong>Stages</strong></td>
+<td>Ordered list of steps, each potentially executed by a different specialized agent</td>
+</tr>
+<tr>
+<td><strong>Target Branch</strong></td>
+<td>Where to push code transformation results</td>
+</tr>
+<tr>
+<td><strong>Associated Agent</strong></td>
+<td>Which agent profile runs this plan</td>
+</tr>
+<tr>
+<td><strong>Target Applications</strong></td>
+<td>Which apps this plan targets (individual, by archetype, or by filter)</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>Draft / Ready / Running / Completed / Failed</td>
+</tr>
+</tbody></table>
+<p><strong>Key Design Points:</strong></p>
+<ul>
+<li>Plans should be <strong>interactive to build</strong> -- the architect may spend 1+ hours crafting a good plan</li>
+<li>Plans can be <strong>composed of multiple stages</strong> for multi-agent workflows (e.g., Stage 1: Run analysis with Agent A, Stage 2: Fix critical issues with Agent B, Stage 3: Update tests with Agent C)</li>
+<li>Plans can leverage <strong>analysis results</strong> -- the static analysis engine provides the issues, the plan tells the agent how to fix them</li>
+<li>Plans should be <strong>testable</strong> -- run on 1-2 apps before scaling to hundreds</li>
+<li>Plans may be auto-generated based on the agent portfolio and application archetypes</li>
+</ul>
+<hr>
+<h2>4. Key UX Flows</h2>
+<h3>4.1 Flow 1: Architect Defines Agent Configuration</h3>
+<p>The architect creates and configures an agent profile with its model and guidelines.</p>
+<pre><code class="language-mermaid">flowchart LR
+    A[&quot;Create Agent Profile&quot;] --&gt; B[&quot;Set Name + Description\n+ Mission Definition&quot;]
+    B --&gt; C[&quot;Configure Model\n(Provider, Model, Credentials)&quot;]
+    C --&gt; D[&quot;Attach Recipes/Guidelines\n(select from available)&quot;]
+    D --&gt; E[&quot;Link to Archetypes\n(for auto-association)&quot;]
+    E --&gt; F[&quot;Agent Ready\nfor Use in Plans&quot;]
+</code></pre>
+<p><strong>UX Details:</strong></p>
+<ul>
+<li>Single-page form with collapsible sections</li>
+<li>Model configuration shows available providers and credentials from the existing credentials store</li>
+<li>Recipe attachment is a multi-select with a preview of each recipe&#39;s content</li>
+<li>Archetype linking shows which applications will auto-inherit this agent</li>
+<li>A &quot;Preview effective configuration&quot; panel shows the merged result of all attached recipes</li>
+</ul>
+<h3>4.2 Flow 2: Recipe / Guidelines Management</h3>
+<p>Architects create and version guidelines that get injected into agent contexts.</p>
+<pre><code class="language-mermaid">flowchart TD
+    A[&quot;Create Recipe&quot;] --&gt; B[&quot;Define Name +\nDescription&quot;]
+    B --&gt; C[&quot;Set Repository URL\n+ Branch/Tag&quot;]
+    C --&gt; D[&quot;Choose Scope Level\n(Agent/Archetype/\nTarget/Application)&quot;]
+    D --&gt; E[&quot;Sync from Repository&quot;]
+    E --&gt; F[&quot;Preview Content&quot;]
+    F --&gt; G[&quot;Recipe Available\nfor Agent Association&quot;]
+
+    H[&quot;Repository Updated&quot;] --&gt; I[&quot;Manual or Auto Sync&quot;]
+    I --&gt; J[&quot;Version Bumped&quot;]
+    J --&gt; F
+</code></pre>
+<p><strong>UX Details:</strong></p>
+<ul>
+<li>Repository URL field with branch/tag selector</li>
+<li>&quot;Sync now&quot; button to pull latest content from the repository</li>
+<li>Read-only preview of the guideline content (rendered markdown)</li>
+<li>Version history showing previous syncs</li>
+<li>Scope level selector with explanation of the inheritance hierarchy</li>
+</ul>
+<h3>4.3 Flow 3: Interactive Plan Building</h3>
+<p>The most UX-intensive flow. The architect builds a detailed migration plan before running it at scale.</p>
+<pre><code class="language-mermaid">flowchart TD
+    A[&quot;Start New Plan&quot;] --&gt; B[&quot;Step 1:\nSelect Target Applications&quot;]
+    B --&gt; C[&quot;Step 2:\nChoose Agent Profile&quot;]
+    C --&gt; D[&quot;Step 3:\nDefine Migration Goal\n(Rich Markdown Editor)&quot;]
+    D --&gt; E[&quot;Step 4:\nCompose Stages\n(Optional Multi-Agent)&quot;]
+    E --&gt; F[&quot;Step 5:\nConfigure Execution\n(Branch, Parallelism,\nResource Limits)&quot;]
+    F --&gt; G[&quot;Step 6:\nReview Full Plan&quot;]
+    G --&gt; H{&quot;Test Run\n(1-2 Apps)&quot;}
+    H --&gt; I[&quot;Evaluate Results\n(Review PR, Logs,\nIssues Fixed)&quot;]
+    I --&gt;|&quot;Not Satisfied\n(Iterate)&quot;| D
+    I --&gt;|&quot;Satisfied&quot;| J[&quot;Run at Scale\n(Remaining Apps)&quot;]
+    J --&gt; K[&quot;Monitor Progress\nin Migration Runs&quot;]
+</code></pre>
+<p><strong>UX Details:</strong></p>
+<ul>
+<li><strong>Step 1 -- Select Applications:</strong> Filter from application inventory by archetype, tags, business service. Bulk select or individual pick. Show count of selected apps.</li>
+<li><strong>Step 2 -- Choose Agent:</strong> Dropdown of available agents, auto-suggested based on selected archetypes. Show agent&#39;s model and recipe count. Link to create new agent if needed.</li>
+<li><strong>Step 3 -- Define Goal:</strong> Rich markdown editor for the migration objective. Could include templates (e.g., &quot;Modernize to {target framework}&quot;, &quot;Fix analysis issues for {migration path}&quot;). This is the prompt that drives the agent.</li>
+<li><strong>Step 4 -- Compose Stages:</strong> Optional drag-and-drop stage composer. Each stage has: name, description, assigned agent, dependencies on previous stages. For simple plans, skip this step (single-stage execution).</li>
+<li><strong>Step 5 -- Configure Execution:</strong> Target branch name, parallelism (how many apps simultaneously), resource limits, whether to write back to knowledge base, whether to auto-create PRs.</li>
+<li><strong>Step 6 -- Review:</strong> Full summary of the plan. &quot;Test run&quot; button runs on 1-2 selected apps. &quot;Run all&quot; button scales to all selected applications.</li>
+<li><strong>Iteration Loop:</strong> After a test run, the architect reviews results (PR, logs, issues fixed count) and can go back to refine the goal or stages before running at scale.</li>
+</ul>
+<h3>4.4 Flow 4: Knowledge Base Management</h3>
+<p>After migrations run, agents write &quot;lessons learned&quot; back to the knowledge base. Architects review and curate this data.</p>
+<pre><code class="language-mermaid">flowchart TD
+    A[&quot;Agent Runs\nMigration&quot;] --&gt; B[&quot;Agent Documents:\n- What changes were made\n- Why they were needed\n- What failed first\n- Lessons learned&quot;]
+    B --&gt; C[&quot;Written to\nKnowledge Base\n(Solution Server)&quot;]
+    C --&gt; D[&quot;Architect Reviews\nKnowledge Entries&quot;]
+    D --&gt; E{&quot;Decision&quot;}
+    E --&gt;|&quot;Approve&quot;| F[&quot;Promoted to\nApproved Knowledge&quot;]
+    E --&gt;|&quot;Edit&quot;| G[&quot;Architect Refines\nthe Entry&quot;]
+    E --&gt;|&quot;Reject&quot;| H[&quot;Entry Removed\nor Flagged&quot;]
+    G --&gt; F
+    F --&gt; I[&quot;Future Agents\nUse This Knowledge&quot;]
+    I --&gt; J[&quot;Enables Transition\nto Cheaper Models&quot;]
+</code></pre>
+<p><strong>UX Details:</strong></p>
+<ul>
+<li><strong>Summary dashboard:</strong> Total entries, approved/pending/rejected counts, entries by migration path, cost savings estimate</li>
+<li><strong>Entries table:</strong> Filterable by migration path, agent, archetype, status. Columns: Issue, Solution Summary, Source Agent Run, Status, Migration Path</li>
+<li><strong>Detail drawer:</strong> Full solution content, associated analysis incidents, diff of code changes, the agent&#39;s reasoning for the change</li>
+<li><strong>Bulk actions:</strong> Select multiple entries and approve/reject in bulk (critical for managing thousands of entries at scale)</li>
+<li><strong>Search:</strong> Full-text search across knowledge entries</li>
+<li><strong>Challenge:</strong> At scale (thousands of issues), one-by-one review doesn&#39;t work. Consider: auto-approve based on confidence score, group similar entries, show only anomalies for manual review</li>
+</ul>
+<h3>4.5 Flow 5: Developer / Migrator Experience</h3>
+<p>The simplified flow for developers who consume pre-configured agents.</p>
+<pre><code class="language-mermaid">flowchart LR
+    A[&quot;Developer Selects\nApplication&quot;] --&gt; B[&quot;See Available\nAgent Profiles\n(Pre-configured\nby Architect)&quot;]
+    B --&gt; C[&quot;Click &#39;Migrate&#39;&quot;]
+    C --&gt; D[&quot;Agent Runs\nwith Inherited\nConfiguration&quot;]
+    D --&gt; E[&quot;PR Created\nwith Changes&quot;]
+    E --&gt; F{&quot;Review PR&quot;}
+    F --&gt;|&quot;Merge&quot;| G[&quot;Migration Complete&quot;]
+    F --&gt;|&quot;Needs Work&quot;| H[&quot;Continue Locally\n(Inherited Guidelines\nStill Active)&quot;]
+    H --&gt; G
+</code></pre>
+<p><strong>UX Details:</strong></p>
+<ul>
+<li>Developer sees only what the architect has enabled for their applications</li>
+<li>No model selection, no guideline configuration -- everything is inherited</li>
+<li>Single &quot;Migrate&quot; button with a confirmation showing what will happen</li>
+<li>Results appear as a PR link with a summary of changes made</li>
+<li>Option to &quot;continue locally&quot; which syncs the agent configuration to their workstation</li>
+</ul>
+<h3>4.6 Flow 6: Model Cost Optimization Loop</h3>
+<p>The overarching loop where architects transition from expensive to cheap models.</p>
+<pre><code class="language-mermaid">flowchart TD
+    A[&quot;Phase 1:\nRun 3-5 Migrations\non Expensive Model\n(e.g., Claude Opus)&quot;] --&gt; B[&quot;Agent Takes Notes:\nLessons Learned\nWritten to\nKnowledge Base&quot;]
+    B --&gt; C[&quot;Architect Reviews\nand Curates\nKnowledge&quot;]
+    C --&gt; D[&quot;Phase 2:\nSwitch Agent to\nCheaper Model\n(e.g., Ollama/Kimi)&quot;]
+    D --&gt; E[&quot;Cheaper Model Uses\nKnowledge Base\nfor Context&quot;]
+    E --&gt; F{&quot;Results\nComparable?&quot;}
+    F --&gt;|&quot;Yes&quot;| G[&quot;Scale with\nCheap Model\n(90%+ Cost Savings)&quot;]
+    F --&gt;|&quot;No&quot;| H[&quot;Run More on\nExpensive Model\nto Build Knowledge&quot;]
+    H --&gt; B
+</code></pre>
+<hr>
+<h2>5. Guidelines Hierarchy Visualization</h2>
+<p>A key UX element is showing how guidelines/recipes are inherited through the hierarchy. This should appear on the Agent Detail page and in the Plan Builder.</p>
+<h3>Tree View</h3>
+<pre><code>Agent: &quot;Java Migration Agent&quot;
+├── [Agent Level] Recipe: &quot;Corporate Coding Standards&quot;
+│     Rules: commit conventions, code documentation, testing requirements
+├── [Agent Level] Recipe: &quot;Security Best Practices&quot;
+│     Rules: no hardcoded credentials, dependency scanning, OWASP compliance
+│
+├── Archetype: &quot;Spring Boot Applications&quot;
+│     └── [Archetype Level] Recipe: &quot;Spring Boot 3.x Migration Guide&quot;
+│           Rules: javax→jakarta namespace, Spring Security 6.x patterns
+│
+├── Target: &quot;Quarkus&quot;
+│     └── [Target Level] Recipe: &quot;Quarkus Best Practices&quot;
+│           Rules: CDI patterns, MicroProfile config, native image considerations
+│
+└── Application: &quot;Order Service&quot; (snowflake)
+      └── [App Level] Recipe: &quot;Order Service Specifics&quot;
+            Rules: custom ORM handling, legacy API compatibility layer
+</code></pre>
+<h3>Effective Configuration View</h3>
+<p>When reviewing an agent&#39;s configuration for a specific application, show the <strong>merged effective configuration</strong> -- all inherited guidelines collapsed into one view, with indicators showing which level each rule came from.</p>
+<hr>
+<h2>6. Navigation Structure</h2>
+<p>Add to the existing Migration perspective sidebar in MTA:</p>
+<pre><code>Migration (perspective)
+├── Dashboard
+├── Applications
+│     ├── Application inventory
+│     ├── Archetypes
+│     └── Migration waves
+├── Agentic Migration        ← NEW SECTION
+│     ├── Agents             ← NEW
+│     ├── Recipes            ← NEW
+│     ├── Plans              ← NEW
+│     ├── Knowledge Base     ← NEW
+│     └── Migration Runs     ← NEW
+├── Analysis Results
+│     ├── Reports
+│     ├── Issues
+│     ├── Insights
+│     └── Dependencies
+└── Configuration
+      ├── Analysis Profiles
+      ├── Controls
+      ├── Custom migration targets
+      └── Task Manager
+</code></pre>
+<hr>
+<h2>7. Page Specifications</h2>
+<h3>7.1 Agents List Page</h3>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Route</strong></td>
+<td><code>/agents</code></td>
+</tr>
+<tr>
+<td><strong>Title</strong></td>
+<td>&quot;Agents&quot;</td>
+</tr>
+<tr>
+<td><strong>Toolbar</strong></td>
+<td>Search by name, &quot;Create agent&quot; primary button</td>
+</tr>
+<tr>
+<td><strong>Table Columns</strong></td>
+<td>Name, Model (provider + model name), Recipes (count), Linked Archetypes (count), Status (Active/Draft/Disabled)</td>
+</tr>
+<tr>
+<td><strong>Row Actions</strong></td>
+<td>Edit, Duplicate, Delete</td>
+</tr>
+<tr>
+<td><strong>Empty State</strong></td>
+<td>&quot;No agents have been created. Create an agent to define how migrations are performed.&quot;</td>
+</tr>
+</tbody></table>
+<h3>7.2 Agent Detail Page</h3>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Route</strong></td>
+<td><code>/agents/new</code> or <code>/agents/:id</code></td>
+</tr>
+<tr>
+<td><strong>Title</strong></td>
+<td>&quot;Create agent&quot; or agent name</td>
+</tr>
+<tr>
+<td><strong>Sections</strong></td>
+<td>Basic Info, Model Configuration, Guidelines, Archetype Associations</td>
+</tr>
+<tr>
+<td><strong>Basic Info</strong></td>
+<td>Name (text), Description (textarea), Definition/Mission (markdown editor)</td>
+</tr>
+<tr>
+<td><strong>Model Config</strong></td>
+<td>Provider (select: OpenAI/Anthropic/Ollama/Custom), Model (text), Credentials (select from existing)</td>
+</tr>
+<tr>
+<td><strong>Guidelines</strong></td>
+<td>Multi-select table of available recipes with scope level indicators</td>
+</tr>
+<tr>
+<td><strong>Archetypes</strong></td>
+<td>Multi-select of archetypes. Show count of applications that will inherit this agent.</td>
+</tr>
+<tr>
+<td><strong>Actions</strong></td>
+<td>Save, Save &amp; Close, Cancel</td>
+</tr>
+</tbody></table>
+<h3>7.3 Recipes List Page</h3>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Route</strong></td>
+<td><code>/recipes</code></td>
+</tr>
+<tr>
+<td><strong>Title</strong></td>
+<td>&quot;Recipes&quot;</td>
+</tr>
+<tr>
+<td><strong>Toolbar</strong></td>
+<td>Search by name, filter by scope level, &quot;Create recipe&quot; primary button</td>
+</tr>
+<tr>
+<td><strong>Table Columns</strong></td>
+<td>Name, Repository URL (truncated), Scope Level (badge), Version/Tag, Last Synced (timestamp)</td>
+</tr>
+<tr>
+<td><strong>Row Actions</strong></td>
+<td>Edit, Sync Now, Delete</td>
+</tr>
+<tr>
+<td><strong>Empty State</strong></td>
+<td>&quot;No recipes defined. Create a recipe to define guidelines and standards for agents.&quot;</td>
+</tr>
+</tbody></table>
+<h3>7.4 Recipe Detail Page</h3>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Route</strong></td>
+<td><code>/recipes/new</code> or <code>/recipes/:id</code></td>
+</tr>
+<tr>
+<td><strong>Title</strong></td>
+<td>&quot;Create recipe&quot; or recipe name</td>
+</tr>
+<tr>
+<td><strong>Form Fields</strong></td>
+<td>Name, Description, Repository URL, Branch/Tag, Scope Level (select)</td>
+</tr>
+<tr>
+<td><strong>Content Preview</strong></td>
+<td>Read-only rendered markdown panel showing the repository content</td>
+</tr>
+<tr>
+<td><strong>Sync Controls</strong></td>
+<td>&quot;Sync now&quot; button, last sync timestamp, sync status</td>
+</tr>
+</tbody></table>
+<h3>7.5 Plans List Page</h3>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Route</strong></td>
+<td><code>/plans</code></td>
+</tr>
+<tr>
+<td><strong>Title</strong></td>
+<td>&quot;Migration Plans&quot;</td>
+</tr>
+<tr>
+<td><strong>Toolbar</strong></td>
+<td>Search by name, filter by status, &quot;Create plan&quot; primary button</td>
+</tr>
+<tr>
+<td><strong>Table Columns</strong></td>
+<td>Name, Agent, Target Apps (count), Stages (count), Status (Draft/Ready/Running/Completed/Failed)</td>
+</tr>
+<tr>
+<td><strong>Row Actions</strong></td>
+<td>Edit, Run, Duplicate, Delete</td>
+</tr>
+<tr>
+<td><strong>Status Colors</strong></td>
+<td>Draft=gray, Ready=blue, Running=blue+spinner, Completed=green, Failed=red</td>
+</tr>
+</tbody></table>
+<h3>7.6 Plan Builder Page</h3>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Route</strong></td>
+<td><code>/plans/new</code> or <code>/plans/:id/edit</code></td>
+</tr>
+<tr>
+<td><strong>Title</strong></td>
+<td>&quot;Create Migration Plan&quot;</td>
+</tr>
+<tr>
+<td><strong>Type</strong></td>
+<td>Multi-step wizard (PatternFly Wizard component)</td>
+</tr>
+<tr>
+<td><strong>Step 1</strong></td>
+<td>Select Applications -- table with filters, checkbox selection, archetype grouping</td>
+</tr>
+<tr>
+<td><strong>Step 2</strong></td>
+<td>Choose Agent -- card-based selection of available agents, auto-suggestion</td>
+</tr>
+<tr>
+<td><strong>Step 3</strong></td>
+<td>Define Goal -- rich markdown editor with templates</td>
+</tr>
+<tr>
+<td><strong>Step 4</strong></td>
+<td>Compose Stages -- drag-and-drop stage list, agent per stage, stage dependencies</td>
+</tr>
+<tr>
+<td><strong>Step 5</strong></td>
+<td>Configure Execution -- branch name, parallelism slider, knowledge base toggle</td>
+</tr>
+<tr>
+<td><strong>Step 6</strong></td>
+<td>Review -- full summary, &quot;Test Run&quot; button, &quot;Run All&quot; button</td>
+</tr>
+</tbody></table>
+<h3>7.7 Knowledge Base Page</h3>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Route</strong></td>
+<td><code>/knowledge-base</code></td>
+</tr>
+<tr>
+<td><strong>Title</strong></td>
+<td>&quot;Knowledge Base&quot;</td>
+</tr>
+<tr>
+<td><strong>Summary Cards</strong></td>
+<td>Total Entries, Approved, Pending Review, Rejected, Migration Paths Covered</td>
+</tr>
+<tr>
+<td><strong>Toolbar</strong></td>
+<td>Search, filter by migration path, filter by status, bulk approve/reject buttons</td>
+</tr>
+<tr>
+<td><strong>Table Columns</strong></td>
+<td>Issue Description, Solution Summary, Source (agent run link), Status (Approved/Pending/Rejected), Migration Path</td>
+</tr>
+<tr>
+<td><strong>Expandable Rows</strong></td>
+<td>Full solution content, associated analysis incidents, code diff, agent reasoning</td>
+</tr>
+<tr>
+<td><strong>Detail Drawer</strong></td>
+<td>Complete entry with all metadata, edit capability for architect refinement</td>
+</tr>
+</tbody></table>
+<h3>7.8 Migration Runs Page</h3>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Route</strong></td>
+<td><code>/migration-runs</code></td>
+</tr>
+<tr>
+<td><strong>Title</strong></td>
+<td>&quot;Migration Runs&quot;</td>
+</tr>
+<tr>
+<td><strong>Toolbar</strong></td>
+<td>Search, filter by status, filter by plan</td>
+</tr>
+<tr>
+<td><strong>Table Columns</strong></td>
+<td>ID, Plan Name, Application, Agent, Status, Started, Duration, PR Link</td>
+</tr>
+<tr>
+<td><strong>Status Colors</strong></td>
+<td>Pending=gray, Running=blue+spinner, Succeeded=green, Failed=red</td>
+</tr>
+<tr>
+<td><strong>Expandable Rows</strong></td>
+<td>Stages completed, issues fixed count, knowledge entries created, cost estimate</td>
+</tr>
+<tr>
+<td><strong>Row Actions</strong></td>
+<td>View Logs, Cancel (if running), Re-run</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>8. Open UX Questions</h2>
+<p>These questions emerged from the meeting and need further exploration:</p>
+<ol>
+<li><p><strong>Knowledge Base Scale:</strong> How does an architect review thousands of entries efficiently? Auto-approve by confidence score? Group similar entries? Show only anomalies?</p>
+</li>
+<li><p><strong>Multi-Agent Orchestration:</strong> How does the UI represent a plan with multiple stages executed by different agents? Is drag-and-drop sufficient or do we need a visual pipeline editor?</p>
+</li>
+<li><p><strong>Iteration UX:</strong> When an architect runs a test migration and wants to iterate, what&#39;s the fastest path to refine the goal/guidelines and re-run?</p>
+</li>
+<li><p><strong>PR Review Integration:</strong> Should MTA show PR review capabilities inline, or always link out to GitHub/GitLab? The meeting discussed driving acceptance/rejection from PR merges.</p>
+</li>
+<li><p><strong>Resource Management:</strong> How do we surface compute resource usage and costs? Especially relevant for running agents in parallel at scale on a cluster.</p>
+</li>
+<li><p><strong>Traceability &amp; Auditing:</strong> Every entity should be versioned (like GitHub Actions pinning to hashes). How do we visualize the audit trail of who changed what configuration and when?</p>
+</li>
+<li><p><strong>Migrator Restrictions:</strong> How granular should the architect&#39;s control be? &quot;Only allow this one action on this repo&quot; vs broader access with guardrails?</p>
+</li>
+</ol>
+<hr>
+<h2>9. Appendix: Mermaid Diagram Source</h2>
+<p>All diagrams in this document use Mermaid syntax. To render them:</p>
+<ul>
+<li>Paste the code blocks into <a href="https://mermaid.live">mermaid.live</a> to generate images</li>
+<li>Or use a Mermaid-compatible markdown renderer (GitHub, GitLab, VS Code with Mermaid extension)</li>
+</ul>
+
+<script>
+document.querySelectorAll('pre code.language-mermaid').forEach(block => {
+  const pre = block.parentElement;
+  const div = document.createElement('div');
+  div.className = 'mermaid';
+  div.textContent = block.textContent;
+  pre.replaceWith(div);
+});
+mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+</script>
+</body>
+</html>

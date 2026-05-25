@@ -1,0 +1,12 @@
+flowchart TD
+    A["Start New Plan"] --> B["Step 1:\nSelect Target Applications"]
+    B --> C["Step 2:\nChoose Agent Profile"]
+    C --> D["Step 3:\nDefine Migration Goal\n(Rich Markdown Editor)"]
+    D --> E["Step 4:\nCompose Stages\n(Optional Multi-Agent)"]
+    E --> F["Step 5:\nConfigure Execution\n(Branch, Parallelism,\nResource Limits)"]
+    F --> G["Step 6:\nReview Full Plan"]
+    G --> H{"Test Run\n(1-2 Apps)"}
+    H --> I["Evaluate Results\n(Review PR, Logs,\nIssues Fixed)"]
+    I -->|"Not Satisfied\n(Iterate)"| D
+    I -->|"Satisfied"| J["Run at Scale\n(Remaining Apps)"]
+    J --> K["Monitor Progress\nin Migration Runs"]

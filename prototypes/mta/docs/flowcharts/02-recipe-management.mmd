@@ -1,0 +1,11 @@
+flowchart TD
+    A["Create Recipe"] --> B["Define Name +\nDescription"]
+    B --> C["Set Repository URL\n+ Branch/Tag"]
+    C --> D["Choose Scope Level\n(Agent/Archetype/\nTarget/Application)"]
+    D --> E["Sync from Repository"]
+    E --> F["Preview Content"]
+    F --> G["Recipe Available\nfor Agent Association"]
+
+    H["Repository Updated"] --> I["Manual or Auto Sync"]
+    I --> J["Version Bumped"]
+    J --> F

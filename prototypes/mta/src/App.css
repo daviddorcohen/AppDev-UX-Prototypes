@@ -1,3 +1,9 @@
+/* Perspective switcher in sidebar */
+.pf-v6-c-page__sidebar-body > .pf-v6-c-select {
+  padding: var(--pf-t--global--spacer--sm) var(--pf-t--global--spacer--md);
+  border-bottom: 1px solid var(--pf-t--global--border--color--default);
+}
+
 /* Migrate wizard: full-width header without horizontal scroll */
 .migrate-wizard {
   max-width: 100%;

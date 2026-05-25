@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Export Flowcharts as PNG</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 40px; background: #f5f5f5; }
+  h1 { color: #333; }
+  .controls { margin: 20px 0; }
+  .controls button { padding: 12px 24px; font-size: 16px; background: #0066cc; color: white; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px; }
+  .controls button:hover { background: #0052a3; }
+  .diagram-section { background: white; border-radius: 8px; padding: 24px; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+  .diagram-section h2 { margin-top: 0; color: #444; }
+  .diagram-section .mermaid { text-align: center; }
+  .download-btn { display: inline-block; margin-top: 12px; padding: 8px 16px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+  .download-btn:hover { background: #218838; }
+  .status { margin: 10px 0; padding: 10px; background: #e8f5e9; border-radius: 4px; display: none; }
+</style>
+</head>
+<body>
+<h1>Agentic Migration UX - Flowcharts</h1>
+<div class="controls">
+  <button onclick="downloadAll()">Download All PNGs</button>
+  <div class="status" id="status"></div>
+</div>
+
+<div class="diagram-section" id="section-01">
+  <h2>Flow 1: Architect Defines Agent Configuration</h2>
+  <pre class="mermaid" id="diagram-01">
+flowchart LR
+    A["Create Agent Profile"] --> B["Set Name + Description\n+ Mission Definition"]
+    B --> C["Configure Model\n(Provider, Model, Credentials)"]
+    C --> D["Attach Recipes/Guidelines\n(select from available)"]
+    D --> E["Link to Archetypes\n(for auto-association)"]
+    E --> F["Agent Ready\nfor Use in Plans"]
+  </pre>
+  <button class="download-btn" onclick="downloadDiagram('diagram-01', '01-agent-configuration.png')">Download PNG</button>
+</div>
+
+<div class="diagram-section" id="section-02">
+  <h2>Flow 2: Recipe / Guidelines Management</h2>
+  <pre class="mermaid" id="diagram-02">
+flowchart TD
+    A["Create Recipe"] --> B["Define Name +\nDescription"]
+    B --> C["Set Repository URL\n+ Branch/Tag"]
+    C --> D["Choose Scope Level\n(Agent/Archetype/\nTarget/Application)"]
+    D --> E["Sync from Repository"]
+    E --> F["Preview Content"]
+    F --> G["Recipe Available\nfor Agent Association"]
+    H["Repository Updated"] --> I["Manual or Auto Sync"]
+    I --> J["Version Bumped"]
+    J --> F
+  </pre>
+  <button class="download-btn" onclick="downloadDiagram('diagram-02', '02-recipe-management.png')">Download PNG</button>
+</div>
+
+<div class="diagram-section" id="section-03">
+  <h2>Flow 3: Interactive Plan Building</h2>
+  <pre class="mermaid" id="diagram-03">
+flowchart TD
+    A["Start New Plan"] --> B["Step 1:\nSelect Target Applications"]
+    B --> C["Step 2:\nChoose Agent Profile"]
+    C --> D["Step 3:\nDefine Migration Goal\n(Rich Markdown Editor)"]
+    D --> E["Step 4:\nCompose Stages\n(Optional Multi-Agent)"]
+    E --> F["Step 5:\nConfigure Execution\n(Branch, Parallelism,\nResource Limits)"]
+    F --> G["Step 6:\nReview Full Plan"]
+    G --> H{"Test Run\n(1-2 Apps)"}
+    H --> I["Evaluate Results\n(Review PR, Logs,\nIssues Fixed)"]
+    I -->|"Not Satisfied\n(Iterate)"| D
+    I -->|"Satisfied"| J["Run at Scale\n(Remaining Apps)"]
+    J --> K["Monitor Progress\nin Migration Runs"]
+  </pre>
+  <button class="download-btn" onclick="downloadDiagram('diagram-03', '03-plan-building.png')">Download PNG</button>
+</div>
+
+<div class="diagram-section" id="section-04">
+  <h2>Flow 4: Knowledge Base Management</h2>
+  <pre class="mermaid" id="diagram-04">
+flowchart TD
+    A["Agent Runs\nMigration"] --> B["Agent Documents:\n- What changes were made\n- Why they were needed\n- What failed first\n- Lessons learned"]
+    B --> C["Written to\nKnowledge Base\n(Solution Server)"]
+    C --> D["Architect Reviews\nKnowledge Entries"]
+    D --> E{"Decision"}
+    E -->|"Approve"| F["Promoted to\nApproved Knowledge"]
+    E -->|"Edit"| G["Architect Refines\nthe Entry"]
+    E -->|"Reject"| H["Entry Removed\nor Flagged"]
+    G --> F
+    F --> I["Future Agents\nUse This Knowledge"]
+    I --> J["Enables Transition\nto Cheaper Models"]
+  </pre>
+  <button class="download-btn" onclick="downloadDiagram('diagram-04', '04-knowledge-base.png')">Download PNG</button>
+</div>
+
+<div class="diagram-section" id="section-05">
+  <h2>Flow 5: Developer / Migrator Experience</h2>
+  <pre class="mermaid" id="diagram-05">
+flowchart LR
+    A["Developer Selects\nApplication"] --> B["See Available\nAgent Profiles\n(Pre-configured\nby Architect)"]
+    B --> C["Click 'Migrate'"]
+    C --> D["Agent Runs\nwith Inherited\nConfiguration"]
+    D --> E["PR Created\nwith Changes"]
+    E --> F{"Review PR"}
+    F -->|"Merge"| G["Migration Complete"]
+    F -->|"Needs Work"| H["Continue Locally\n(Inherited Guidelines\nStill Active)"]
+    H --> G
+  </pre>
+  <button class="download-btn" onclick="downloadDiagram('diagram-05', '05-developer-experience.png')">Download PNG</button>
+</div>
+
+<div class="diagram-section" id="section-06">
+  <h2>Flow 6: Model Cost Optimization Loop</h2>
+  <pre class="mermaid" id="diagram-06">
+flowchart TD
+    A["Phase 1:\nRun 3-5 Migrations\non Expensive Model\n(e.g., Claude Opus)"] --> B["Agent Takes Notes:\nLessons Learned\nWritten to\nKnowledge Base"]
+    B --> C["Architect Reviews\nand Curates\nKnowledge"]
+    C --> D["Phase 2:\nSwitch Agent to\nCheaper Model\n(e.g., Ollama/Kimi)"]
+    D --> E["Cheaper Model Uses\nKnowledge Base\nfor Context"]
+    E --> F{"Results\nComparable?"}
+    F -->|"Yes"| G["Scale with\nCheap Model\n(90%+ Cost Savings)"]
+    F -->|"No"| H["Run More on\nExpensive Model\nto Build Knowledge"]
+    H --> B
+  </pre>
+  <button class="download-btn" onclick="downloadDiagram('diagram-06', '06-cost-optimization.png')">Download PNG</button>
+</div>
+
+<script>
+mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+
+function downloadDiagram(id, filename) {
+  const container = document.getElementById(id);
+  const svg = container.querySelector('svg');
+  if (!svg) { alert('Diagram not rendered yet. Please wait.'); return; }
+
+  const svgData = new XMLSerializer().serializeToString(svg);
+  const canvas = document.createElement('canvas');
+  const scale = 2;
+  const bbox = svg.getBoundingClientRect();
+  canvas.width = bbox.width * scale;
+  canvas.height = bbox.height * scale;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(scale, scale);
+  ctx.fillStyle = 'white';
+  ctx.fillRect(0, 0, bbox.width, bbox.height);
+
+  const img = new Image();
+  const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+  const url = URL.createObjectURL(svgBlob);
+
+  img.onload = function() {
+    ctx.drawImage(img, 0, 0, bbox.width, bbox.height);
+    URL.revokeObjectURL(url);
+    const pngUrl = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = pngUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+  img.src = url;
+}
+
+async function downloadAll() {
+  const status = document.getElementById('status');
+  status.style.display = 'block';
+  const diagrams = [
+    ['diagram-01', '01-agent-configuration.png'],
+    ['diagram-02', '02-recipe-management.png'],
+    ['diagram-03', '03-plan-building.png'],
+    ['diagram-04', '04-knowledge-base.png'],
+    ['diagram-05', '05-developer-experience.png'],
+    ['diagram-06', '06-cost-optimization.png'],
+  ];
+  for (let i = 0; i < diagrams.length; i++) {
+    status.textContent = `Downloading ${i + 1} of ${diagrams.length}: ${diagrams[i][1]}...`;
+    downloadDiagram(diagrams[i][0], diagrams[i][1]);
+    await new Promise(r => setTimeout(r, 500));
+  }
+  status.textContent = 'All 6 diagrams downloaded!';
+}
+</script>
+</body>
+</html>

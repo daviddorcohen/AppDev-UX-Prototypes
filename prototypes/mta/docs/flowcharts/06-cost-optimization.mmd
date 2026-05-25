@@ -1,0 +1,9 @@
+flowchart TD
+    A["Phase 1:\nRun 3-5 Migrations\non Expensive Model\n(e.g., Claude Opus)"] --> B["Agent Takes Notes:\nLessons Learned\nWritten to\nKnowledge Base"]
+    B --> C["Architect Reviews\nand Curates\nKnowledge"]
+    C --> D["Phase 2:\nSwitch Agent to\nCheaper Model\n(e.g., Ollama/Kimi)"]
+    D --> E["Cheaper Model Uses\nKnowledge Base\nfor Context"]
+    E --> F{"Results\nComparable?"}
+    F -->|"Yes"| G["Scale with\nCheap Model\n(90%+ Cost Savings)"]
+    F -->|"No"| H["Run More on\nExpensive Model\nto Build Knowledge"]
+    H --> B
