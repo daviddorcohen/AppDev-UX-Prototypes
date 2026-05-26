@@ -84,7 +84,7 @@ export function RecipesList() {
   const onPerPageSelect = useCallback((_: unknown, pp: number) => { setPerPage(pp); setPage(1) }, [])
 
   const getRowActions = useCallback((recipe: Recipe): IAction[] => [
-    { title: 'Edit', onClick: () => navigate(`/recipes/${recipe.id}`) },
+    { title: 'Edit', onClick: () => navigate(`/recipes/${recipe.id}/edit`) },
     { title: 'Sync now', onClick: () => {} },
     { isSeparator: true },
     { title: 'Delete', onClick: () => {}, isDanger: true },
@@ -154,7 +154,10 @@ export function RecipesList() {
             </Thead>
             <Tbody>
               {paginated.map(recipe => (
-                <Tr key={recipe.id} isClickable onRowClick={() => navigate(`/recipes/${recipe.id}`)}>
+                <Tr key={recipe.id} isClickable onRowClick={(event) => {
+                  if ((event?.target as HTMLElement).closest('td.pf-v6-c-table__action')) return
+                  navigate(`/recipes/${recipe.id}`)
+                }}>
                   <Td dataLabel="Name" modifier="breakWord">{recipe.name}</Td>
                   <Td dataLabel="Repository URL" modifier="truncate" style={{ maxWidth: 260 }}>{recipe.repoUrl}</Td>
                   <Td dataLabel="Scope Level">

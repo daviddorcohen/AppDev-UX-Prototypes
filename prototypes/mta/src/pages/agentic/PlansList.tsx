@@ -159,7 +159,7 @@ export function PlansList() {
                 return (
                   <Tr key={plan.id} isClickable onRowClick={(event) => {
                     if ((event?.target as HTMLElement).closest('td.pf-v6-c-table__action')) return
-                    navigate(`/plans/${plan.id}/edit`)
+                    navigate(`/plans/${plan.id}`)
                   }}>
                     <Td dataLabel="Name" modifier="breakWord">{plan.name}</Td>
                     <Td dataLabel="Agent">{plan.agent}</Td>

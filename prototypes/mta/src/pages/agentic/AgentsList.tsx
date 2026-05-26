@@ -79,7 +79,7 @@ export function AgentsList() {
   const onPerPageSelect = useCallback((_: unknown, pp: number) => { setPerPage(pp); setPage(1) }, [])
 
   const getRowActions = useCallback((agent: Agent): IAction[] => [
-    { title: 'Edit', onClick: () => navigate(`/agents/${agent.id}`) },
+    { title: 'Edit', onClick: () => navigate(`/agents/${agent.id}/edit`) },
     { title: 'Duplicate', onClick: () => {} },
     { isSeparator: true },
     { title: 'Delete', onClick: () => {}, isDanger: true },
@@ -149,7 +149,10 @@ export function AgentsList() {
             </Thead>
             <Tbody>
               {paginated.map(agent => (
-                <Tr key={agent.id} isClickable onRowClick={() => navigate(`/agents/${agent.id}`)}>
+                <Tr key={agent.id} isClickable onRowClick={(event) => {
+                  if ((event?.target as HTMLElement).closest('td.pf-v6-c-table__action')) return
+                  navigate(`/agents/${agent.id}`)
+                }}>
                   <Td dataLabel="Name" modifier="breakWord">{agent.name}</Td>
                   <Td dataLabel="Model">{agent.provider} / {agent.model}</Td>
                   <Td dataLabel="Recipes">{agent.recipesCount}</Td>

@@ -45,10 +45,13 @@ import { AssessmentQuestionnaires } from './pages/admin/AssessmentQuestionnaires
 import { SourcePlatforms } from './pages/admin/SourcePlatforms'
 import { Generators } from './pages/admin/Generators'
 import { AgentsList } from './pages/agentic/AgentsList'
+import { AgentOverview } from './pages/agentic/AgentOverview'
 import { AgentDetail } from './pages/agentic/AgentDetail'
 import { RecipesList } from './pages/agentic/RecipesList'
+import { RecipeOverview } from './pages/agentic/RecipeOverview'
 import { RecipeDetail } from './pages/agentic/RecipeDetail'
 import { PlansList } from './pages/agentic/PlansList'
+import { PlanOverview } from './pages/agentic/PlanOverview'
 import { PlanBuilder } from './pages/agentic/PlanBuilder'
 import { KnowledgeBase } from './pages/agentic/KnowledgeBase'
 import { MigrationRuns } from './pages/agentic/MigrationRuns'
@@ -418,11 +421,16 @@ export default function App() {
             <Route path="/task-manager" element={<TaskManager />} />
             {/* Agentic migration pages */}
             <Route path="/agents" element={<AgentsList />} />
-            <Route path="/agents/:id" element={<AgentDetail />} />
+            <Route path="/agents/new" element={<AgentDetail />} />
+            <Route path="/agents/:id" element={<AgentOverview />} />
+            <Route path="/agents/:id/edit" element={<AgentDetail />} />
             <Route path="/recipes" element={<RecipesList />} />
-            <Route path="/recipes/:id" element={<RecipeDetail />} />
+            <Route path="/recipes/new" element={<RecipeDetail />} />
+            <Route path="/recipes/:id" element={<RecipeOverview />} />
+            <Route path="/recipes/:id/edit" element={<RecipeDetail />} />
             <Route path="/plans" element={<PlansList />} />
             <Route path="/plans/new" element={<PlanBuilder />} />
+            <Route path="/plans/:id" element={<PlanOverview />} />
             <Route path="/plans/:id/edit" element={<PlanBuilder />} />
             <Route path="/knowledge-base" element={<KnowledgeBase />} />
             <Route path="/migration-runs" element={<MigrationRuns />} />
