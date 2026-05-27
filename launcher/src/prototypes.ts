@@ -1,3 +1,4 @@
+import { podmanDesktopPrototypes } from '../../prototypes/podman-desktop/prototypes'
 import { rhdhPrototypes } from '../../prototypes/rhdh/prototypes'
 
 export type Product = 'RHDH' | 'MTA' | 'Konflux' | 'TPA' | 'TAS' | 'Podman Desktop' | 'RHCL' | 'DevSpaces'
@@ -26,14 +27,5 @@ export const prototypes: Prototype[] = [
     lastUpdated: 'Apr 21, 2026',
   },
   ...rhdhPrototypes,
-  {
-    name: 'Podman Desktop PF Alignment',
-    project: 'PatternFly Component Alignment',
-    product: 'Podman Desktop',
-    description: 'A prototype exploring the alignment of Podman Desktop UI components with PatternFly design patterns, ensuring visual and behavioral consistency with the Red Hat design system.',
-    externalUrl: 'https://podman-desktop-aaa7fd.pages.redhat.com/',
-    path: '',
-    status: 'Active',
-    lastUpdated: 'Apr 30, 2026',
-  },
+  ...podmanDesktopPrototypes,
 ]
