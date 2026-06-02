@@ -26,6 +26,15 @@ export const prototypes: Prototype[] = [
     status: 'Active',
     lastUpdated: 'Apr 21, 2026',
   },
+  {
+    name: 'MTA for RHDH',
+    project: 'Migration Toolkit Plugin for Developer Hub',
+    product: 'RHDH',
+    description: 'The MTA experience as an RHDH plugin. Includes an application dashboard, a 4-step onboarding wizard with simulated discovery analysis, and per-application detail pages with migration issues and action macros.',
+    path: '/AppDev-UX-Prototypes/mta-rhdh/',
+    status: 'Active',
+    lastUpdated: 'Jun 2, 2026',
+  },
   ...rhdhPrototypes,
   ...podmanDesktopPrototypes,
 ]

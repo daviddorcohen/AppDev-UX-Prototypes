@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "install:all": "cd launcher && npm install && cd ../prototypes/mta && npm install",
+    "install:all": "cd launcher && npm install && cd ../prototypes/mta && npm install && cd ../mta-rhdh && npm install",
     "build:launcher": "cd launcher && npm run build",
     "build:mta": "cd prototypes/mta && npm run build",
-    "build": "npm run build:launcher && npm run build:mta && npm run assemble",
-    "assemble": "rm -rf dist && cp -R launcher/dist dist && mkdir -p dist/mta && cp -R prototypes/mta/dist/* dist/mta/"
+    "build:mta-rhdh": "cd prototypes/mta-rhdh && npm run build",
+    "build": "npm run build:launcher && npm run build:mta && npm run build:mta-rhdh && npm run assemble",
+    "assemble": "rm -rf dist && cp -R launcher/dist dist && mkdir -p dist/mta && cp -R prototypes/mta/dist/* dist/mta/ && mkdir -p dist/mta-rhdh && cp -R prototypes/mta-rhdh/dist/* dist/mta-rhdh/"
   }
 }

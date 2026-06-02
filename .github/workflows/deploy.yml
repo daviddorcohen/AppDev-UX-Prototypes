@@ -35,12 +35,18 @@ jobs:
         working-directory: prototypes/mta
         run: npm install && npm run build
 
+      - name: Install and build MTA-RHDH prototype
+        working-directory: prototypes/mta-rhdh
+        run: npm install && npm run build
+
       - name: Assemble dist
         run: |
           mkdir -p _site
           cp -R launcher/dist/* _site/
           mkdir -p _site/mta
           cp -R prototypes/mta/dist/* _site/mta/
+          mkdir -p _site/mta-rhdh
+          cp -R prototypes/mta-rhdh/dist/* _site/mta-rhdh/
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
