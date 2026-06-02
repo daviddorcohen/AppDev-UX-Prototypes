@@ -29,7 +29,6 @@ export function LifecycleStepper({ phases }: LifecycleStepperProps) {
           id={phase.id}
           titleId={`${phase.id}-title`}
           variant={phaseVariant(phase.status)}
-          isCurrent={phase.status === 'current'}
           description={phase.description}
           aria-label={phase.label}
         >

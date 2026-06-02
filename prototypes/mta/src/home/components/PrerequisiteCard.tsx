@@ -12,7 +12,6 @@ import {
 } from '@patternfly/react-core'
 import CheckCircleIcon from '@patternfly/react-icons/dist/esm/icons/check-circle-icon'
 import ExclamationCircleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-circle-icon'
-import ExclamationTriangleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-triangle-icon'
 import { PrerequisiteItem } from '../types'
 
 function statusColor(status: PrerequisiteItem['status']) {
@@ -20,9 +19,8 @@ function statusColor(status: PrerequisiteItem['status']) {
     case 'complete':
       return 'green' as const
     case 'partial':
-      return 'orange' as const
     case 'incomplete':
-      return 'red' as const
+      return 'grey' as const
   }
 }
 
@@ -42,7 +40,6 @@ function StatusIcon({ status }: { status: PrerequisiteItem['status'] }) {
     case 'complete':
       return <CheckCircleIcon />
     case 'partial':
-      return <ExclamationTriangleIcon />
     case 'incomplete':
       return <ExclamationCircleIcon />
   }
