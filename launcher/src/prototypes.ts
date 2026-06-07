@@ -12,6 +12,7 @@ export interface Prototype {
   description: string
   path: string
   externalUrl?: string
+  buttonLabel?: string
   status: 'Active' | 'In Progress' | 'Planned'
   lastUpdated: string
 }

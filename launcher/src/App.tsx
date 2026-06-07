@@ -192,7 +192,7 @@ export function App() {
                     icon={<ExternalLinkAltIcon />}
                     iconPosition="end"
                   >
-                    {proto.externalUrl ? 'Launch prototype (VPN required)' : 'Launch prototype'}
+                    {proto.buttonLabel ?? (proto.externalUrl ? 'Launch prototype (VPN required)' : 'Launch prototype')}
                   </Button>
                   <Content component="small" style={{ color: 'var(--pf-t--global--text--color--subtle)' }}>
                     Last updated: {proto.lastUpdated}
