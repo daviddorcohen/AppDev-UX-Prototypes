@@ -22,4 +22,15 @@ export const podmanDesktopPrototypes: Prototype[] = [
     status: 'In Progress',
     lastUpdated: 'May 27, 2026',
   },
+  {
+    name: 'Kubernetes Developer Sandbox',
+    project: 'Kubernetes Developer Sandbox Promotion',
+    product: 'Podman Desktop',
+    description: 'A prototype adding a Red Hat Developer Sandbox prompt to the Kubernetes page in Podman Desktop. When users have no active cluster, they see a recommended card encouraging sign-up for Developer Sandbox, providing an easy path to a managed Kubernetes environment with Install/Connect actions.',
+    externalUrl: 'https://github.com/podman-desktop/podman-desktop/pull/17775',
+    buttonLabel: 'View PR',
+    path: '',
+    status: 'In Progress',
+    lastUpdated: 'Jun 8, 2026',
+  },
 ]
