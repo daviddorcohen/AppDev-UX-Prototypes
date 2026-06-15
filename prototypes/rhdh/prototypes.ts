@@ -127,7 +127,7 @@ export const rhdhPrototypes: Prototype[] = [
     product: 'RHDH',
     description:
       'Catalog and entity overview improvements for Red Hat Developer Hub, including integration health in the catalog table, dashboard tiles linked to entity tabs, template run metrics, and a GitLab Pages demo of the updated experience.',
-    externalUrl: 'https://overview-page-improvements-233513.pages.redhat.com/',
+    externalUrl: 'https://overview-page-improvements-6424e0.pages.redhat.com/',
     path: '',
     status: 'Active',
     lastUpdated: 'Jun 15, 2026',
