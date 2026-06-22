@@ -1,5 +1,6 @@
 import { podmanDesktopPrototypes } from '../../prototypes/podman-desktop/prototypes'
 import { rhdhPrototypes } from '../../prototypes/rhdh/prototypes'
+import { devSpacesPrototypes } from '../../prototypes/dev-spaces/prototypes'
 
 export type Product = 'RHDH' | 'MTA' | 'Konflux' | 'TPA' | 'TAS' | 'Podman Desktop' | 'RHCL' | 'DevSpaces'
 
@@ -28,5 +29,6 @@ export const prototypes: Prototype[] = [
     lastUpdated: 'Apr 21, 2026',
   },
   ...rhdhPrototypes,
+  ...devSpacesPrototypes,
   ...podmanDesktopPrototypes,
 ]
