@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AppDev UX Prototypes</title>
+    <script>
+      // GitHub Pages SPA redirect: preserve the path so the React app can read it
+      var path = window.location.pathname;
+      window.location.replace(
+        window.location.origin + path.split('/').slice(0, 2).join('/') +
+        '/?p=' + encodeURIComponent(path.replace(/^\/AppDev-UX-Prototypes\/?/, ''))
+      );
+    </script>
+  </head>
+  <body></body>
+</html>
