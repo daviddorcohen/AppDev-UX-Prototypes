@@ -174,7 +174,10 @@ export function App() {
                 <CardTitle>{proto.name}</CardTitle>
               </CardHeader>
               <CardBody>
-                <Flex style={{ marginBottom: 12, gap: 8 }}>
+                <Flex
+                  alignItems={{ default: 'alignItemsCenter' }}
+                  style={{ marginBottom: 12, gap: 4, flexWrap: 'nowrap' }}
+                >
                   <Label color={productColor(proto.product)} isCompact>{proto.product}</Label>
                   {proto.tags?.map((tag) => (
                     <Label
