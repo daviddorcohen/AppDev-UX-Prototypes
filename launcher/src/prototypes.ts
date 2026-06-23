@@ -6,6 +6,14 @@ export type Product = 'RHDH' | 'MTA' | 'Konflux' | 'TPA' | 'TAS' | 'Podman Deskt
 
 export const allProducts: Product[] = ['RHDH', 'MTA', 'Konflux', 'TPA', 'TAS', 'Podman Desktop', 'RHCL', 'DevSpaces']
 
+export type PrototypeTagColor = 'blue' | 'green' | 'orange' | 'red' | 'purple' | 'teal' | 'yellow' | 'grey'
+
+export interface PrototypeTag {
+  label: string
+  color: PrototypeTagColor
+  icon?: 'stars'
+}
+
 export interface Prototype {
   name: string
   project: string
@@ -14,6 +22,7 @@ export interface Prototype {
   path: string
   externalUrl?: string
   buttonLabel?: string
+  tags?: PrototypeTag[]
   status: 'Active' | 'In Progress' | 'Planned'
   lastUpdated: string
 }

@@ -23,9 +23,10 @@ import {
   ToggleGroupItem,
 } from '@patternfly/react-core'
 import ExternalLinkAltIcon from '@patternfly/react-icons/dist/esm/icons/external-link-alt-icon'
-import { prototypes, allProducts, Prototype, Product } from './prototypes'
+import StarIcon from '@patternfly/react-icons/dist/esm/icons/star-icon'
+import { prototypes, allProducts, Prototype, Product, PrototypeTagColor } from './prototypes'
 
-type LabelColor = 'blue' | 'green' | 'orange' | 'red' | 'purple' | 'teal' | 'yellow' | 'grey'
+type LabelColor = PrototypeTagColor
 
 const productColorMap: Record<Product, LabelColor> = {
   'RHDH': 'purple',
@@ -173,8 +174,18 @@ export function App() {
                 <CardTitle>{proto.name}</CardTitle>
               </CardHeader>
               <CardBody>
-                <Flex style={{ marginBottom: 12 }}>
+                <Flex style={{ marginBottom: 12, gap: 8 }}>
                   <Label color={productColor(proto.product)} isCompact>{proto.product}</Label>
+                  {proto.tags?.map((tag) => (
+                    <Label
+                      key={tag.label}
+                      color={tag.color}
+                      isCompact
+                      icon={tag.icon === 'stars' ? <StarIcon /> : undefined}
+                    >
+                      {tag.label}
+                    </Label>
+                  ))}
                 </Flex>
                 <Content component="p" style={{ fontWeight: 600, marginBottom: 8 }}>
                   {proto.project}

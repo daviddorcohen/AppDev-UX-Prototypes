@@ -143,4 +143,43 @@ export const rhdhPrototypes: Prototype[] = [
     status: 'Active',
     lastUpdated: 'Jun 23, 2026',
   },
+  {
+    name: 'RHDH Designer Onboarding',
+    project: 'Cursor Agent Skills',
+    product: 'RHDH',
+    description:
+      'Standalone Cursor skill for new RHDH designers: Day 1 setup through first published GitLab Pages prototype. Includes environment checklist, workflow decision tree, Week 1 path, mock data playbook, and pre-publish verification.',
+    externalUrl: 'https://gitlab.cee.redhat.com/shirshbe/skill-rhdh-designer-onboarding',
+    buttonLabel: 'View skill (VPN required)',
+    path: '',
+    tags: [{ label: 'AI', color: 'yellow', icon: 'stars' }],
+    status: 'Active',
+    lastUpdated: 'Jun 23, 2026',
+  },
+  {
+    name: 'RHDH UX Designer',
+    project: 'Cursor Agent Skills',
+    product: 'RHDH',
+    description:
+      'Cursor skill for RHDH UI standards: Backstage UI (BUI), RHDH theme and global header, GitLab Pages baseline, prototype scope switcher placement, design review checklist, and Jira workflow guidance.',
+    externalUrl: 'https://gitlab.cee.redhat.com/shirshbe/skill-rhdh-ux-designer',
+    buttonLabel: 'View skill (VPN required)',
+    path: '',
+    tags: [{ label: 'AI', color: 'yellow', icon: 'stars' }],
+    status: 'Active',
+    lastUpdated: 'Jun 23, 2026',
+  },
+  {
+    name: 'RHDH Prototype Handoff',
+    project: 'Cursor Agent Skills',
+    product: 'RHDH',
+    description:
+      'Cursor skill and reusable PrototypeViewSwitcher component for multi-release RHDH prototypes. Covers release-scoped views, RELEASE-MAPPING, engineering handoff artifacts, and canonical scope bar placement.',
+    externalUrl: 'https://gitlab.cee.redhat.com/shirshbe/skill-rhdh-prototype-handoff',
+    buttonLabel: 'View skill (VPN required)',
+    path: '',
+    tags: [{ label: 'AI', color: 'yellow', icon: 'stars' }],
+    status: 'Active',
+    lastUpdated: 'Jun 23, 2026',
+  },
 ]
