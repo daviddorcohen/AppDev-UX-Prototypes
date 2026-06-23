@@ -132,4 +132,15 @@ export const rhdhPrototypes: Prototype[] = [
     status: 'Active',
     lastUpdated: 'Jun 15, 2026',
   },
+  {
+    name: 'RHDH Theme',
+    project: 'RHDH Platform Shell & Theme',
+    product: 'RHDH',
+    description:
+      'The main RHDH prototype base on Backstage 1.52 with BUI shell, RHDH branding, and a release-scoped theme view. Includes the prototype scope switcher, global header, PatternFly-style page inset, in-memory static catalog for GitLab Pages, and the shared fork starting point at uxd/prototypes/backstage.',
+    externalUrl: 'https://backstage-7587c0.pages.redhat.com/',
+    path: '',
+    status: 'Active',
+    lastUpdated: 'Jun 23, 2026',
+  },
 ]
