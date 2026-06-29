@@ -16,6 +16,11 @@ import {
   Gallery,
   Badge,
   Button,
+  Bullseye,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateActions,
+  EmptyStateFooter,
   Flex,
   FlexItem,
   Label,
@@ -23,10 +28,13 @@ import {
   ToggleGroupItem,
 } from '@patternfly/react-core'
 import ExternalLinkAltIcon from '@patternfly/react-icons/dist/esm/icons/external-link-alt-icon'
+import SearchIcon from '@patternfly/react-icons/dist/esm/icons/search-icon'
 import StarIcon from '@patternfly/react-icons/dist/esm/icons/star-icon'
 import { prototypes, allProducts, Prototype, Product, PrototypeTagColor } from './prototypes'
 
 type LabelColor = PrototypeTagColor
+
+const AI_SKILL_FILTER = 'AI skill' as const
 
 const productColorMap: Record<Product, LabelColor> = {
   'RHDH': 'purple',
@@ -35,8 +43,9 @@ const productColorMap: Record<Product, LabelColor> = {
   'TPA': 'blue',
   'TAS': 'green',
   'Podman Desktop': 'red',
-  'RHCL': 'yellow',
+  'RHCL': 'orangered',
   'DevSpaces': 'grey',
+  'AI skill': 'yellow',
 }
 
 const colorCssMap: Record<LabelColor, string> = {
@@ -48,6 +57,11 @@ const colorCssMap: Record<LabelColor, string> = {
   teal: 'var(--pf-t--global--color--nonstatus--teal--default)',
   yellow: 'var(--pf-t--global--color--nonstatus--yellow--default)',
   grey: 'var(--pf-t--global--text--color--subtle)',
+  orangered: 'var(--pf-t--global--color--nonstatus--orangered--default)',
+}
+
+function aiSkillLabelIcon(label: string): React.ReactNode | undefined {
+  return label === AI_SKILL_FILTER ? <StarIcon /> : undefined
 }
 
 function productColor(product: Product): LabelColor {
@@ -68,8 +82,19 @@ function toSlug(product: Product | 'All'): string {
 
 function fromSlug(slug: string): Product | 'All' {
   if (!slug || slug.toLowerCase() === 'all') return 'All'
+  if (slug.toLowerCase() === 'appdev-ai-skills' || slug.toLowerCase() === 'ai-skills') return AI_SKILL_FILTER
   const match = allProducts.find((p) => toSlug(p).toLowerCase() === slug.toLowerCase())
   return match ?? 'All'
+}
+
+function isAiSkill(proto: Prototype): boolean {
+  return proto.product === AI_SKILL_FILTER || proto.project === 'Cursor & Claude Code Agent Skills'
+}
+
+function matchesProductFilter(proto: Prototype, selected: Product): boolean {
+  if (selected === AI_SKILL_FILTER) return isAiSkill(proto)
+  if (proto.product === selected) return true
+  return proto.tags?.some((tag) => tag.label === selected) === true
 }
 
 function getProductFromPath(): Product | 'All' {
@@ -112,7 +137,7 @@ export function App() {
 
   const filtered = selectedProduct === 'All'
     ? [...prototypes].sort((a, b) => a.name.localeCompare(b.name))
-    : prototypes.filter((p) => p.product === selectedProduct)
+    : prototypes.filter((p) => matchesProductFilter(p, selectedProduct))
 
   const masthead = (
     <Masthead style={{ backgroundColor: 'var(--pf-t--global--background--color--primary--default)' }}>
@@ -134,22 +159,30 @@ export function App() {
           Prototypes
         </Title>
 
-        <Flex alignItems={{ default: 'alignItemsCenter' }} style={{ marginBottom: 24, gap: 12 }}>
-          <FlexItem>
-            <Content component="p" style={{ fontWeight: 600, margin: 0 }}>Filter by product:</Content>
-          </FlexItem>
-          <FlexItem>
-            <ToggleGroup aria-label="Filter by product">
+        <div className="product-filter-bar">
+          <span className="product-filter-bar__label">Filter by product:</span>
+          <ToggleGroup aria-label="Filter by product" className="product-filter-toggle-group">
+            <ToggleGroupItem
+              text="All"
+              isSelected={selectedProduct === 'All'}
+              onChange={() => setSelectedProduct('All')}
+            />
+            {allProducts.map((product) => (
               <ToggleGroupItem
-                text="All"
-                isSelected={selectedProduct === 'All'}
-                onChange={() => setSelectedProduct('All')}
-              />
-              {allProducts.map((product) => (
-                <ToggleGroupItem
-                  key={product}
-                  text={
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                key={product}
+                text={
+                  <span className="product-filter-toggle-text">
+                    {product === AI_SKILL_FILTER ? (
+                      <StarIcon
+                        style={{
+                          color: colorCssMap.yellow,
+                          flexShrink: 0,
+                          width: 10,
+                          height: 10,
+                          fontSize: 10,
+                        }}
+                      />
+                    ) : (
                       <span style={{
                         width: 10,
                         height: 10,
@@ -157,16 +190,33 @@ export function App() {
                         backgroundColor: colorCssMap[productColorMap[product]],
                         flexShrink: 0,
                       }} />
-                      {product}
-                    </span>
-                  }
-                  isSelected={selectedProduct === product}
-                  onChange={() => setSelectedProduct(product)}
-                />
-              ))}
-            </ToggleGroup>
-          </FlexItem>
-        </Flex>
+                    )}
+                    {product}
+                  </span>
+                }
+                isSelected={selectedProduct === product}
+                onChange={() => setSelectedProduct(product)}
+              />
+            ))}
+          </ToggleGroup>
+        </div>
+        {filtered.length === 0 ? (
+          <Bullseye style={{ minHeight: 320, marginTop: 'var(--pf-t--global--spacer--xl)' }}>
+            <EmptyState headingLevel="h2" icon={SearchIcon} titleText="No prototypes found">
+              <EmptyStateBody>
+                No prototypes match the <strong>{selectedProduct}</strong> filter. Try selecting a
+                different product or view all prototypes.
+              </EmptyStateBody>
+              <EmptyStateFooter>
+                <EmptyStateActions>
+                  <Button variant="primary" onClick={() => setSelectedProduct('All')}>
+                    View all prototypes
+                  </Button>
+                </EmptyStateActions>
+              </EmptyStateFooter>
+            </EmptyState>
+          </Bullseye>
+        ) : (
         <Gallery hasGutter minWidths={{ default: '300px' }}>
           {filtered.map((proto) => (
             <Card key={proto.name} isFullHeight>
@@ -179,13 +229,19 @@ export function App() {
                   alignItems={{ default: 'alignItemsCenter' }}
                   style={{ marginBottom: 12, flexWrap: 'nowrap' }}
                 >
-                  <Label color={productColor(proto.product)} isCompact>{proto.product}</Label>
+                  <Label
+                    color={productColor(proto.product)}
+                    isCompact
+                    icon={aiSkillLabelIcon(proto.product)}
+                  >
+                    {proto.product}
+                  </Label>
                   {proto.tags?.map((tag) => (
                     <Label
                       key={tag.label}
                       color={tag.color}
                       isCompact
-                      icon={tag.icon === 'stars' ? <StarIcon /> : undefined}
+                      icon={tag.icon === 'stars' || tag.label === AI_SKILL_FILTER ? <StarIcon /> : undefined}
                     >
                       {tag.label}
                     </Label>
@@ -217,11 +273,6 @@ export function App() {
             </Card>
           ))}
         </Gallery>
-
-        {filtered.length === 0 && (
-          <Content component="p" style={{ marginTop: 24, fontStyle: 'italic' }}>
-            No prototypes found for {selectedProduct}.
-          </Content>
         )}
       </PageSection>
     </Page>

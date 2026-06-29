@@ -1,12 +1,32 @@
+import { appDevAiSkillsPrototypes } from '../../prototypes/appdev-ai-skills/prototypes'
 import { podmanDesktopPrototypes } from '../../prototypes/podman-desktop/prototypes'
 import { rhdhPrototypes } from '../../prototypes/rhdh/prototypes'
 import { devSpacesPrototypes } from '../../prototypes/dev-spaces/prototypes'
 
-export type Product = 'RHDH' | 'MTA' | 'Konflux' | 'TPA' | 'TAS' | 'Podman Desktop' | 'RHCL' | 'DevSpaces'
+export type Product =
+  | 'RHDH'
+  | 'MTA'
+  | 'Konflux'
+  | 'TPA'
+  | 'TAS'
+  | 'Podman Desktop'
+  | 'RHCL'
+  | 'DevSpaces'
+  | 'AI skill'
 
-export const allProducts: Product[] = ['RHDH', 'MTA', 'Konflux', 'TPA', 'TAS', 'Podman Desktop', 'RHCL', 'DevSpaces']
+export const allProducts: Product[] = [
+  'RHDH',
+  'MTA',
+  'Konflux',
+  'TPA',
+  'TAS',
+  'Podman Desktop',
+  'RHCL',
+  'DevSpaces',
+  'AI skill',
+]
 
-export type PrototypeTagColor = 'blue' | 'green' | 'orange' | 'red' | 'purple' | 'teal' | 'yellow' | 'grey'
+export type PrototypeTagColor = 'blue' | 'green' | 'orange' | 'red' | 'purple' | 'teal' | 'yellow' | 'grey' | 'orangered'
 
 export interface PrototypeTag {
   label: string
@@ -40,4 +60,5 @@ export const prototypes: Prototype[] = [
   ...rhdhPrototypes,
   ...devSpacesPrototypes,
   ...podmanDesktopPrototypes,
+  ...appDevAiSkillsPrototypes,
 ]
