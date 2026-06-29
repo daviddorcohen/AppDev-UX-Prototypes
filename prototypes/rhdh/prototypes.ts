@@ -182,4 +182,16 @@ export const rhdhPrototypes: Prototype[] = [
     status: 'Active',
     lastUpdated: 'Jun 23, 2026',
   },
+  {
+    name: 'Enterprise Skills Server',
+    project: 'Agent Skills Directory',
+    product: 'RHDH',
+    description:
+      'A skills directory for discovering, installing and managing agent skills. Includes a searchable skills catalog, skill detail pages, and an admin UI for registering sources and managing skills.',
+    externalUrl: 'https://rhess-7078a2.pages.redhat.com/skills',
+    buttonLabel: 'Launch prototype (VPN required)',
+    path: '',
+    status: 'Active',
+    lastUpdated: 'Jun 29, 2026',
+  },
 ]
