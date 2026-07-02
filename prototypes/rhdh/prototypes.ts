@@ -133,6 +133,17 @@ export const rhdhPrototypes: Prototype[] = [
     lastUpdated: 'Jun 15, 2026',
   },
   {
+    name: 'Template Management',
+    project: 'Software Template Governance',
+    product: 'RHDH',
+    description:
+      'Administration experience for managing software templates in Red Hat Developer Hub: searchable template table with metrics and catalog actions, per-template Usage and Execution output views, scaffolder create flows, and Build with AI for orchestrator-style template authoring with chat history and registration status.',
+    externalUrl: 'https://template-management-e4f367.pages.redhat.com/administration/template-management',
+    path: '',
+    status: 'Active',
+    lastUpdated: 'Jul 2, 2026',
+  },
+  {
     name: 'RHDH Theme',
     project: 'RHDH Platform Shell & Theme',
     product: 'RHDH',
