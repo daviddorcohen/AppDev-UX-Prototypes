@@ -144,6 +144,18 @@ export const rhdhPrototypes: Prototype[] = [
     lastUpdated: 'Jul 2, 2026',
   },
   {
+    name: 'Layout Management',
+    project: 'Administration Layout & Navigation',
+    product: 'RHDH',
+    description:
+      'Administration experience for customizing RHDH navigation and global header layout: reorder sidebar and header items, pin items to the bottom, add or remove nav entries, insert border dividers, and preview changes in the live sidebar with RHDH scope and in-memory static catalog on GitLab Pages.',
+    externalUrl:
+      'https://layout-plugin-e9a6ff.pages.redhat.com/administration/layout?scope=rhdh',
+    path: '',
+    status: 'Active',
+    lastUpdated: 'Jul 2, 2026',
+  },
+  {
     name: 'RHDH Theme',
     project: 'RHDH Platform Shell & Theme',
     product: 'RHDH',
