@@ -33,20 +33,26 @@ jobs:
           sudo mv oc /usr/local/bin/
           oc login --token="${{ secrets.OC_TOKEN }}" --server="${{ secrets.OC_SERVER }}" --insecure-skip-tls-verify
           oc rollout restart deployment/${PROTOTYPE_DEPLOYMENT}
-          oc rollout status deployment/${PROTOTYPE_DEPLOYMENT} --timeout=120s || true
-          sleep 30
-          RECHECK=$(curl -sk -o /dev/null -w "%{http_code}" "${{ secrets.PROTOTYPE_URL }}" || echo "000")
-          echo "Post-heal status: HTTP $RECHECK"
-          if [ "$RECHECK" != "200" ] && [ "$RECHECK" != "302" ] && [ "$RECHECK" != "403" ]; then
-            echo "Self-heal FAILED"
-            if [ -n "${{ secrets.SLACK_WEBHOOK_URL }}" ]; then
-              curl -s -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
-                -H 'Content-type: application/json' \
-                --data '{"text": ":rotating_light: *[GitHub Actions backup monitor] Self-heal failed* — site still returning HTTP '"$RECHECK"' after rollout restart.\n\nOC_TOKEN may be expired or sandbox may need reactivation.\n\nWorkflow: <https://github.com/dcohen213/AppDev-UX-Prototypes/actions|View runs>"}'
+          oc rollout status deployment/${PROTOTYPE_DEPLOYMENT} --timeout=180s || true
+
+          # Retry loop — pod readiness probe needs time
+          for i in 1 2 3 4; do
+            sleep 30
+            RECHECK=$(curl -sk -o /dev/null -w "%{http_code}" "${{ secrets.PROTOTYPE_URL }}" || echo "000")
+            echo "Attempt $i — HTTP $RECHECK"
+            if [ "$RECHECK" = "200" ] || [ "$RECHECK" = "302" ] || [ "$RECHECK" = "403" ]; then
+              echo "Self-heal successful"
+              exit 0
             fi
-            exit 1
+          done
+
+          echo "Self-heal FAILED after 4 attempts"
+          if [ -n "${{ secrets.SLACK_WEBHOOK_URL }}" ]; then
+            curl -s -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
+              -H 'Content-type: application/json' \
+              --data '{"text": ":rotating_light: *[GitHub Actions backup monitor] Self-heal failed* — site still returning HTTP '"$RECHECK"' after rollout restart.\n\nOC_TOKEN may be expired or sandbox may need reactivation.\n\nWorkflow: <https://github.com/dcohen213/AppDev-UX-Prototypes/actions|View runs>"}'
           fi
-          echo "Self-heal successful"
+          exit 1
 
   token-health-check:
     if: github.event.schedule == '0 8 * * *'
