@@ -1,0 +1,73 @@
+name: "Sandbox Monitor (Backup)"
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # keep-alive + self-heal
+    - cron: '0 8 * * *'     # daily token health check
+  workflow_dispatch:
+
+env:
+  PROTOTYPE_DEPLOYMENT: mta-prototype
+
+jobs:
+  keep-alive:
+    if: github.event.schedule != '0 8 * * *'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping prototype
+        id: ping
+        run: |
+          STATUS=$(curl -sk -o /dev/null -w "%{http_code}" "${{ secrets.PROTOTYPE_URL }}" || echo "000")
+          echo "status=$STATUS" >> "$GITHUB_OUTPUT"
+          echo "Prototype status: HTTP $STATUS"
+          if [ "$STATUS" = "200" ] || [ "$STATUS" = "302" ] || [ "$STATUS" = "403" ]; then
+            echo "Prototype is up"
+          else
+            echo "Prototype is DOWN — will attempt self-heal"
+          fi
+
+      - name: Self-heal
+        if: steps.ping.outputs.status != '200' && steps.ping.outputs.status != '302' && steps.ping.outputs.status != '403'
+        run: |
+          curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz | tar xz
+          sudo mv oc /usr/local/bin/
+          oc login --token="${{ secrets.OC_TOKEN }}" --server="${{ secrets.OC_SERVER }}" --insecure-skip-tls-verify
+          oc rollout restart deployment/${PROTOTYPE_DEPLOYMENT}
+          oc rollout status deployment/${PROTOTYPE_DEPLOYMENT} --timeout=120s || true
+          sleep 30
+          RECHECK=$(curl -sk -o /dev/null -w "%{http_code}" "${{ secrets.PROTOTYPE_URL }}" || echo "000")
+          echo "Post-heal status: HTTP $RECHECK"
+          if [ "$RECHECK" != "200" ] && [ "$RECHECK" != "302" ] && [ "$RECHECK" != "403" ]; then
+            echo "Self-heal FAILED"
+            if [ -n "${{ secrets.SLACK_WEBHOOK_URL }}" ]; then
+              curl -s -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
+                -H 'Content-type: application/json' \
+                --data '{"text": ":rotating_light: *[GitHub Actions backup monitor] Self-heal failed* — site still returning HTTP '"$RECHECK"' after rollout restart.\n\nOC_TOKEN may be expired or sandbox may need reactivation.\n\nWorkflow: <https://github.com/dcohen213/AppDev-UX-Prototypes/actions|View runs>"}'
+            fi
+            exit 1
+          fi
+          echo "Self-heal successful"
+
+  token-health-check:
+    if: github.event.schedule == '0 8 * * *'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify OC_TOKEN
+        run: |
+          curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz | tar xz
+          sudo mv oc /usr/local/bin/
+          if oc login --token="${{ secrets.OC_TOKEN }}" --server="${{ secrets.OC_SERVER }}" --insecure-skip-tls-verify 2>/dev/null; then
+            echo "OC_TOKEN is valid — logged in as $(oc whoami)"
+            oc get pods -l app=mta-prototype --no-headers
+            echo "Token health check passed"
+          else
+            echo "OC_TOKEN is EXPIRED or INVALID"
+            if [ -n "${{ secrets.SLACK_WEBHOOK_URL }}" ]; then
+              curl -s -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
+                -H 'Content-type: application/json' \
+                --data '{
+                  "text": ":rotating_light: *[GitHub Actions backup monitor] OC_TOKEN expired* — self-heal and CI deploys will fail.\n\n*Fix:*\n1. `oc login` to the sandbox\n2. `oc create token ci-deployer --duration=720h`\n3. Update `OC_TOKEN` in both GitLab CI/CD and GitHub repo secrets"
+                }'
+            fi
+            exit 1
+          fi
