@@ -32,12 +32,30 @@ jobs:
           curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz | tar xz
           sudo mv oc /usr/local/bin/
           oc login --token="${{ secrets.OC_TOKEN }}" --server="${{ secrets.OC_SERVER }}" --insecure-skip-tls-verify
-          oc rollout restart deployment/${PROTOTYPE_DEPLOYMENT}
+
+          # Ensure deployment has replicas (sandbox idles to 0)
+          REPLICAS=$(oc get deployment/${PROTOTYPE_DEPLOYMENT} -o jsonpath='{.spec.replicas}' 2>/dev/null || echo "missing")
+          if [ "$REPLICAS" = "missing" ]; then
+            echo "Deployment not found — sandbox may have expired. Alerting."
+            curl -s -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
+              -H 'Content-type: application/json' \
+              --data '{"text": ":rotating_light: *[GitHub Actions backup monitor] Deployment missing* — sandbox namespace may have expired. Manual reactivation needed.\n\nWorkflow: <https://github.com/dcohen213/AppDev-UX-Prototypes/actions|View runs>"}'
+            exit 1
+          fi
+
+          if [ "$REPLICAS" = "0" ]; then
+            echo "Deployment scaled to 0 — scaling back up"
+            oc scale deployment/${PROTOTYPE_DEPLOYMENT} --replicas=1
+          else
+            echo "Deployment has $REPLICAS replicas — restarting rollout"
+            oc rollout restart deployment/${PROTOTYPE_DEPLOYMENT}
+          fi
+
           oc rollout status deployment/${PROTOTYPE_DEPLOYMENT} --timeout=180s || true
 
           # Retry loop — pod readiness probe needs time
-          for i in 1 2 3 4; do
-            sleep 30
+          for i in 1 2 3 4 5 6; do
+            sleep 15
             RECHECK=$(curl -sk -o /dev/null -w "%{http_code}" "${{ secrets.PROTOTYPE_URL }}" || echo "000")
             echo "Attempt $i — HTTP $RECHECK"
             if [ "$RECHECK" = "200" ] || [ "$RECHECK" = "302" ] || [ "$RECHECK" = "403" ]; then
@@ -46,11 +64,11 @@ jobs:
             fi
           done
 
-          echo "Self-heal FAILED after 4 attempts"
+          echo "Self-heal FAILED after 6 attempts"
           if [ -n "${{ secrets.SLACK_WEBHOOK_URL }}" ]; then
             curl -s -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
               -H 'Content-type: application/json' \
-              --data '{"text": ":rotating_light: *[GitHub Actions backup monitor] Self-heal failed* — site still returning HTTP '"$RECHECK"' after rollout restart.\n\nOC_TOKEN may be expired or sandbox may need reactivation.\n\nWorkflow: <https://github.com/dcohen213/AppDev-UX-Prototypes/actions|View runs>"}'
+              --data '{"text": ":rotating_light: *[GitHub Actions backup monitor] Self-heal failed* — site still returning HTTP '"$RECHECK"' after recovery attempt.\n\nOC_TOKEN may be expired or sandbox may need reactivation.\n\nWorkflow: <https://github.com/dcohen213/AppDev-UX-Prototypes/actions|View runs>"}'
           fi
           exit 1
 
