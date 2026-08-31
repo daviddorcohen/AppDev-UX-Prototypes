@@ -4,14 +4,18 @@ on:
   schedule:
     - cron: '*/10 * * * *'  # keep-alive + self-heal
     - cron: '0 8 * * *'     # daily token health check
+    - cron: '0 12 1 * *'    # monthly repo keepalive (prevents GitHub 60-day schedule disable)
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 env:
   PROTOTYPE_DEPLOYMENT: mta-prototype
 
 jobs:
   keep-alive:
-    if: github.event.schedule != '0 8 * * *'
+    if: github.event.schedule != '0 8 * * *' && github.event.schedule != '0 12 1 * *'
     runs-on: ubuntu-latest
     steps:
       - name: Ping prototype
@@ -33,7 +37,6 @@ jobs:
           sudo mv oc /usr/local/bin/
           oc login --token="${{ secrets.OC_TOKEN }}" --server="${{ secrets.OC_SERVER }}" --insecure-skip-tls-verify
 
-          # Ensure deployment has replicas (sandbox idles to 0)
           REPLICAS=$(oc get deployment/${PROTOTYPE_DEPLOYMENT} -o jsonpath='{.spec.replicas}' 2>/dev/null || echo "missing")
           if [ "$REPLICAS" = "missing" ]; then
             echo "Deployment not found — sandbox may have expired. Alerting."
@@ -53,7 +56,6 @@ jobs:
 
           oc rollout status deployment/${PROTOTYPE_DEPLOYMENT} --timeout=180s || true
 
-          # Retry loop — pod readiness probe needs time
           for i in 1 2 3 4 5 6; do
             sleep 15
             RECHECK=$(curl -sk -o /dev/null -w "%{http_code}" "${{ secrets.PROTOTYPE_URL }}" || echo "000")
@@ -95,3 +97,17 @@ jobs:
             fi
             exit 1
           fi
+
+  repo-keepalive:
+    if: github.event.schedule == '0 12 1 * *'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Touch repo to prevent 60-day schedule disable
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          date -u +%Y-%m-%dT%H:%M:%SZ > .github/.keepalive
+          git add .github/.keepalive
+          git commit -m "chore: monthly repo keepalive [skip ci]" || echo "No changes"
+          git push
